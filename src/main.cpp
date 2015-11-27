@@ -1,4 +1,7 @@
 #include <irrlicht.h>
+#include <iostream>
+
+#include "irrlichtDebug.hpp"
 
 using namespace irr;
 
