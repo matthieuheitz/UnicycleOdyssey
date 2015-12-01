@@ -9,6 +9,10 @@ namespace ic = irr::core;
 namespace is = irr::scene;
 namespace iv = irr::video;
 
+// Prototypes
+void drawAxes(irr::video::IVideoDriver * driver);
+
+// Event managing class
 struct MyEventReceiver : IEventReceiver
 {
   bool OnEvent(const SEvent &event)
@@ -49,14 +53,30 @@ int main()
 
   while(device->run())
   {
-    driver->beginScene(true, true, iv::SColor(0,50,100,255));
+    driver->beginScene(true, true, iv::SColor(0,250,255,255));
+
+    // Draw Axes
+    drawAxes(driver);
+
 
     // Draw the scene
     smgr->drawAll();
-    //
+
     driver->endScene();
   }
   device->drop();
 
   return 0;
+}
+
+void drawAxes(video::IVideoDriver *driver)
+{
+    iv::SMaterial lineMaterial;
+    lineMaterial.Thickness = 2;
+    lineMaterial.setFlag(irr::video::EMF_LIGHTING, false);
+    driver->setMaterial(lineMaterial);
+    driver->setTransform(video::ETS_WORLD, core::IdentityMatrix);
+    driver->draw3DLine(ic::vector3df(0,0,0),ic::vector3df(1,0,0),iv::SColor(0,255,0,0));
+    driver->draw3DLine(ic::vector3df(0,0,0),ic::vector3df(0,1,0),iv::SColor(0,0,255,0));
+    driver->draw3DLine(ic::vector3df(0,0,0),ic::vector3df(0,0,1),iv::SColor(0,0,0,255));
 }
