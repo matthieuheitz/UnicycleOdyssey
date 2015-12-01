@@ -1,5 +1,6 @@
 #include <irrlicht.h>
 #include <iostream>
+#include <math.h>
 
 #include "irrlichtDebug.hpp"
 
@@ -90,12 +91,14 @@ int main()
   groundNode->addAnimator(groundAnimator);
     
   // Loading a mesh
-  is::IAnimatedMesh *mesh = smgr->getMesh("data/test_with_bones_and_skinweights_and_modif.x");
+  is::IAnimatedMesh *mesh = smgr->getMesh("data/test_with_bones_and_skinweights_rescaled_meshes_merged.x");
 
   // Creating node from mesh
   is::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
-  //ic::vector3df scale(0.005,0.005,0.005);
-  //node->setScale( scale );
+  ic::vector3df scale(0.2,0.2,0.2 );
+  node->setScale( scale );
+  node->setRotation(ic::vector3df(-90,0,0));
+  node->setPosition(ic::vector3df(2.5,0,2));
 
   while(device->run())
   {
