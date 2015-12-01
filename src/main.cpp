@@ -61,6 +61,9 @@ int main()
   float roadLength = 100;
   float roadWidth = 5;
 
+  float characterTransversalSpeed = 1.0f;
+  float frameDeltaTime = 0.05f;
+
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
   camera->setTarget(ic::vector3df(2.5,0,3));
@@ -104,9 +107,9 @@ int main()
     core::vector3df nodePosition = node->getPosition();
 
     if(receiver.IsKeyDown(irr::KEY_KEY_Q))
-        nodePosition.X -= movementSpeed * frameDeltaTime;
+        nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
     else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-        nodePosition.X += movementSpeed * frameDeltaTime;
+        nodePosition.X += characterTransversalSpeed * frameDeltaTime;
 
 	node->setPosition(nodePosition);
 
