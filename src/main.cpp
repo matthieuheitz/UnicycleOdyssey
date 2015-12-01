@@ -57,12 +57,16 @@ int main()
   is::ISceneManager *smgr = device->getSceneManager();
 
   // Global variables
+  // Speeds are in m/s
+  // physical coordinates are in meters
+  // Times are in seconds
   float backgroundSpeed = 2.0;
   float roadLength = 100;
   float roadWidth = 5;
 
-  float characterTransversalSpeed = 1.0f;
-  float frameDeltaTime = 0.05f;
+  // We want the character to cross the road in 1 sec
+  float characterTransversalSpeed = roadWidth/1.0;
+  float frameDeltaTime = 1/60.0f;
 
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
@@ -96,6 +100,21 @@ int main()
   is::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
   //ic::vector3df scale(0.005,0.005,0.005);
   //node->setScale( scale );
+
+  // Create walls
+  is::IMeshSceneNode * wallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(2.5,1,5),
+                                                        core::vector3df(0,0,0), core::vector3df(5,2,0.2));
+  iv::ITexture * wallTex = driver->getTexture("data/brick_cropped.png");
+  is::ISceneNodeAnimator * wallAnimator =
+          smgr->createFlyStraightAnimator(ic::vector3df(2.5,1,22),
+                                          ic::vector3df(2.5,1,-2),
+                                          roadLength/10.0f/backgroundSpeed*1000*2,
+                                          true
+                                          );
+  wallNode->addAnimator(wallAnimator);
+  wallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  wallNode->setMaterialTexture(0, wallTex);
+
 
   while(device->run())
   {
