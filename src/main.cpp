@@ -41,15 +41,36 @@ int main()
   iv::IVideoDriver  *driver = device->getVideoDriver();
   is::ISceneManager *smgr = device->getSceneManager();
 
-//  // Loading a mesh
-//  is::IAnimatedMesh *mesh = smgr->getMesh("data/tris.md2");
+  // Global variables
+  float backgroundSpeed = 2.0;
+  float roadLength = 100;
+  float roadWidth = 5;
 
-//  // Creating node from mesh
-//  is::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
+  // Initialize the camera
+  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
+  camera->setTarget(ic::vector3df(2.5,0,3));
+  camera->setPosition(ic::vector3df(2.5,2.0,0));
 
+  // Load the ground
+  is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
+  iv::ITexture * groundTex = driver->getTexture("data/Bois.png");
 
-  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeMaya();
-//  camera->setTarget(node->getPosition());
+  // Create nodes for the ground
+  is::IMeshSceneNode * groundNode = smgr->addMeshSceneNode(groundMesh);
+  is::ISceneNodeAnimator * groundAnimator =
+          smgr->createFlyStraightAnimator(ic::vector3df(0,0,-1),
+                                          ic::vector3df(0,0,-11),
+                                          roadLength/10.0f/backgroundSpeed*1000,
+                                          true
+                                          );
+  // Initialize the mesh node
+  groundNode->setPosition(ic::vector3df(0,0,0));
+  groundNode->setScale(ic::vector3df(roadWidth,1,roadLength));
+  groundNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  groundNode->setMaterialTexture(0, groundTex);
+  groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
+  groundNode->addAnimator(groundAnimator);
+
 
   while(device->run())
   {
