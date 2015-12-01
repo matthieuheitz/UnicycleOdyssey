@@ -3,6 +3,7 @@
 
 namespace ic = irr::core;
 namespace iv = irr::video;
+namespace is = irr::scene;
 
 // Serialize an irrlicht vector3df
 std::ostream& operator<<(std::ostream& out, const ic::vector3df vec)
@@ -77,4 +78,20 @@ std::ostream& operator<<(std::ostream& out, const iv::SColorf color)
         << "," << color.getBlue()
         << ")";
     return out;
+}
+
+// Load a mesh from an obj file, make an X symmetry, and flip the triangles
+// This is to avoid the mesh to be misplaced, because of irrlicht left-hand convention.
+is::IMesh * loadIMeshFromOBJ(is::ISceneManager * smgr, const char * filepath)
+{
+    is::IMesh * mesh = smgr->getMesh(filepath);
+
+    iv::S3DVertex* vertexArray = (iv::S3DVertex*)mesh->getMeshBuffer(0)->getVertices();
+    for(int i=0 ; i < mesh->getMeshBuffer(0)->getVertexCount() ; i++)
+    {
+      vertexArray[i].Pos.X = -vertexArray[i].Pos.X;
+    }
+    smgr->getMeshManipulator()->flipSurfaces(mesh);
+
+    return mesh;
 }
