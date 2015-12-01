@@ -13,20 +13,35 @@ namespace iv = irr::video;
 void drawAxes(irr::video::IVideoDriver * driver);
 
 // Event managing class
-struct MyEventReceiver : IEventReceiver
+class MyEventReceiver : public IEventReceiver
 {
-  bool OnEvent(const SEvent &event)
-  {
-    // If input is of keyboard type  (KEY_INPUT)
-    // and a pressed key
-    // and the key is ESCAPE
-    if (event.EventType == EET_KEY_INPUT_EVENT &&
-        event.KeyInput.PressedDown &&
-        event.KeyInput.Key == KEY_ESCAPE)
-      exit(0);
+public:
+    bool OnEvent(const SEvent &event)
+    {
+        // If input is of keyboard type  (KEY_INPUT)
+        // and a pressed key
+        // and the key is ESCAPE
+        if (event.EventType == EET_KEY_INPUT_EVENT &&
+                event.KeyInput.PressedDown &&
+                event.KeyInput.Key == KEY_ESCAPE)
+            exit(0);
+        if (event.EventType == irr::EET_KEY_INPUT_EVENT)
+            KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+        return false;
+    }
 
-    return false;
-  }
+    virtual bool IsKeyDown(EKEY_CODE keyCode) const
+    {
+        return KeyIsDown[keyCode];
+    }
+    MyEventReceiver()
+    {
+        for (u32 i=0; i<KEY_KEY_CODES_COUNT; ++i)
+            KeyIsDown[i] = false;
+    }
+private:
+    //store the state of each key
+    bool KeyIsDown[KEY_KEY_CODES_COUNT];
 };
 
 int main()
@@ -70,7 +85,14 @@ int main()
   groundNode->setMaterialTexture(0, groundTex);
   groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
   groundNode->addAnimator(groundAnimator);
+    
+  // Loading a mesh
+  is::IAnimatedMesh *mesh = smgr->getMesh("data/test_with_bones_and_skinweights_and_modif.x");
 
+  // Creating node from mesh
+  is::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
+  //ic::vector3df scale(0.005,0.005,0.005);
+  //node->setScale( scale );
 
   while(device->run())
   {
@@ -79,6 +101,14 @@ int main()
     // Draw Axes
     drawAxes(driver);
 
+    core::vector3df nodePosition = node->getPosition();
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
+        nodePosition.X -= movementSpeed * frameDeltaTime;
+    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+        nodePosition.X += movementSpeed * frameDeltaTime;
+
+	node->setPosition(nodePosition);
 
     // Draw the scene
     smgr->drawAll();
