@@ -90,15 +90,28 @@ int main()
   groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
   groundNode->addAnimator(groundAnimator);
     
-  // Loading a mesh
-  is::IAnimatedMesh *mesh = smgr->getMesh("data/test_with_bones_and_skinweights_rescaled_meshes_merged.x");
-
+  // Loading a character mesh
+  is::IAnimatedMesh *mesh_character = smgr->getMesh("data/character.x");
   // Creating node from mesh
-  is::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
-  ic::vector3df scale(0.2,0.2,0.2 );
-  node->setScale( scale );
-  node->setRotation(ic::vector3df(-90,0,0));
-  node->setPosition(ic::vector3df(2.5,0,2));
+  is::IAnimatedMeshSceneNode *node_character = smgr->addAnimatedMeshSceneNode(mesh_character);
+  ic::vector3df scale(0.02,0.02,0.02 );
+  node_character->setScale( scale );
+  //node_character->setRotation(ic::vector3df(-90,0,0));
+  node_character->setPosition(ic::vector3df(2.5,2,1));
+
+  node_character->setMaterialFlag(video::EMF_LIGHTING, false);
+  node_character->setFrameLoop(0, 55);
+  node_character->setAnimationSpeed(15);
+
+  // Loading a bike mesh
+  is::IAnimatedMesh *mesh_bike = smgr->getMesh("data/bike.x");
+  // Creating node from mesh
+  is::IAnimatedMeshSceneNode *node_bike = smgr->addAnimatedMeshSceneNode(mesh_bike);
+  ic::vector3df scale_bike(0.2,0.2,0.2 );
+  node_bike->setScale( scale_bike );
+  node_bike->setRotation(ic::vector3df(-90,90,0));
+  node_bike->setPosition(ic::vector3df(2.5,2,2));
+
 
   while(device->run())
   {
@@ -107,14 +120,16 @@ int main()
     // Draw Axes
     drawAxes(driver);
 
-    core::vector3df nodePosition = node->getPosition();
+    core::vector3df nodePosition = node_character->getPosition();
+
 
     if(receiver.IsKeyDown(irr::KEY_KEY_Q))
         nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
     else if(receiver.IsKeyDown(irr::KEY_KEY_D))
         nodePosition.X += characterTransversalSpeed * frameDeltaTime;
 
-	node->setPosition(nodePosition);
+    node_character->setPosition(nodePosition);
+    node_bike->setPosition(nodePosition);
 
     // Draw the scene
     smgr->drawAll();
