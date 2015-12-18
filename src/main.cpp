@@ -62,7 +62,7 @@ int main()
   // Times are in seconds
   float backgroundSpeed = 2.0;
   float roadLength = 100;
-  float roadWidth = 5;
+  float roadWidth = 6;
 
   // We want the character to cross the road in 1 sec
   float characterTransversalSpeed = roadWidth/1.0;
@@ -70,8 +70,8 @@ int main()
 
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
-  camera->setTarget(ic::vector3df(2.5,0,3));
-  camera->setPosition(ic::vector3df(2.5,2.0,0));
+  camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
+  camera->setPosition(ic::vector3df(roadWidth/2.0, 2.0, 0));
 
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
