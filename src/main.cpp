@@ -62,13 +62,19 @@ int main()
   float roadLength = 100;
   float roadWidth = 5;
 
-  float characterTransversalSpeed = 1.0f;
+  float characterTransversalSpeed = 0.2f;
   float frameDeltaTime = 0.05f;
 
   // Initialize the camera
-  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
-  camera->setTarget(ic::vector3df(2.5,0,3));
-  camera->setPosition(ic::vector3df(2.5,2.0,0));
+//  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
+//  camera->setTarget(ic::vector3df(2.5,0,3));
+//  camera->setPosition(ic::vector3df(2.5,2.0,0));
+//  camera->setNearValue(0.1);
+
+  is::ICameraSceneNode *camera = smgr->addCameraSceneNode(nullptr, ic::vector3df(0, 30, -40), ic::vector3df(0, 5, 0));
+    camera->setTarget(ic::vector3df(2.5,2,3));
+    camera->setPosition(ic::vector3df(2.5,2.2,0.3));
+    camera->setNearValue(0.1);
 
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
@@ -96,11 +102,16 @@ int main()
   is::IAnimatedMeshSceneNode *node_character = smgr->addAnimatedMeshSceneNode(mesh_character);
   ic::vector3df scale(0.02,0.02,0.02 );
   node_character->setScale( scale );
-  //node_character->setRotation(ic::vector3df(-90,0,0));
-  node_character->setPosition(ic::vector3df(2.5,2,1));
-
+  node_character->setRotation(ic::vector3df(0,180,0));
+  node_character->setPosition(ic::vector3df(2.5,2,0.5));
   node_character->setMaterialFlag(video::EMF_LIGHTING, false);
-  node_character->setFrameLoop(0, 55);
+
+  /** Testing texture, to be changed **/
+  //node_character->setMaterialTexture( 0, driver->getTexture("data/mountain.jpg") );
+  //node_character->setMaterialType( video::EMT_SOLID );
+  /** **/
+
+  node_character->setFrameLoop(1, 1);
   node_character->setAnimationSpeed(15);
 
   // Loading a bike mesh
@@ -110,8 +121,11 @@ int main()
   ic::vector3df scale_bike(0.2,0.2,0.2 );
   node_bike->setScale( scale_bike );
   node_bike->setRotation(ic::vector3df(-90,90,0));
-  node_bike->setPosition(ic::vector3df(2.5,2,2));
+  node_bike->setPosition(ic::vector3df(2.5,2,0.55));
+  node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
 
+  int state_left_arm = 0; // 0 for rest position, -1 for down, +1 for up
+  int state_right_arm = 0;
 
   while(device->run())
   {
@@ -121,15 +135,90 @@ int main()
     drawAxes(driver);
 
     core::vector3df nodePosition = node_character->getPosition();
+    core::vector3df nodeBikePosition = node_bike->getPosition();
 
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_P))
+    {
+        state_left_arm = 1;
+           if(state_right_arm == 0)
+           {
+               node_character->setFrameLoop(80,80);
+           }
+           else if(state_right_arm == 1)
+           {
+               node_character->setFrameLoop(10,10);
+           }
+           else if(state_right_arm == -1)
+           {
+               node_character->setFrameLoop(40,40);
+           }
+    }
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_M))
+    {
+        state_left_arm = -1;
+           if(state_right_arm == 0)
+           {
+               node_character->setFrameLoop(20,20);
+           }
+           else if(state_right_arm == 1)
+           {
+               node_character->setFrameLoop(90,90);
+           }
+           else if(state_right_arm == -1)
+           {
+               node_character->setFrameLoop(50,50);
+           }
+    }
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_I))
+    {
+        state_right_arm = 1;
+           if(state_left_arm == 0)
+           {
+               node_character->setFrameLoop(70,70);
+           }
+           else if(state_left_arm == 1)
+           {
+               node_character->setFrameLoop(10,10);
+           }
+           else if(state_left_arm == -1)
+           {
+               node_character->setFrameLoop(90,90);
+           }
+    }
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_K))
+    {
+        state_right_arm = -1;
+           if(state_left_arm == 0)
+           {
+               node_character->setFrameLoop(30,30);
+           }
+           else if(state_left_arm == 1)
+           {
+               node_character->setFrameLoop(40,40);
+           }
+           else if(state_left_arm == -1)
+           {
+               node_character->setFrameLoop(50,50);
+           }
+    }
 
     if(receiver.IsKeyDown(irr::KEY_KEY_Q))
+    {
         nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
+        nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
+    }
     else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+    {
         nodePosition.X += characterTransversalSpeed * frameDeltaTime;
+        nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
+    }
 
     node_character->setPosition(nodePosition);
-    node_bike->setPosition(nodePosition);
+    node_bike->setPosition(nodeBikePosition);
 
     // Draw the scene
     smgr->drawAll();
