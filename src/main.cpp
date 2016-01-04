@@ -60,7 +60,7 @@ int main()
   // Speeds are in m/s
   // physical coordinates are in meters
   // Times are in seconds
-  float backgroundSpeed = 2.0;
+  float backgroundSpeed = 4.0;
   float roadLength = 100;
   float roadWidth = 6;
 
@@ -71,7 +71,7 @@ int main()
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
   camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
-  camera->setPosition(ic::vector3df(roadWidth/2.0, 2.0, 0));
+  camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
 
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
@@ -102,19 +102,51 @@ int main()
   //node->setScale( scale );
 
   // Create walls
-  is::IMeshSceneNode * wallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(2.5,1,5),
-                                                        core::vector3df(0,0,0), core::vector3df(5,2,0.2));
-  iv::ITexture * wallTex = driver->getTexture("data/brick_cropped.png");
-  is::ISceneNodeAnimator * wallAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(2.5,1,22),
-                                          ic::vector3df(2.5,1,-2),
+  is::IMeshSceneNode * leftWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(1, 1, 5),
+                                                        core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
+  is::IMeshSceneNode * middleWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(3, 1, 5),
+                                                        core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
+  is::IMeshSceneNode * rightWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(5, 1, 5),
+                                                        core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
+  is::ISceneNodeAnimator * leftWallAnimator =
+          smgr->createFlyStraightAnimator(ic::vector3df(1,1,24),
+                                          ic::vector3df(1,1,0),
                                           roadLength/10.0f/backgroundSpeed*1000*2,
                                           true
                                           );
-  wallNode->addAnimator(wallAnimator);
-  wallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  wallNode->setMaterialTexture(0, wallTex);
+  is::ISceneNodeAnimator * middleWallAnimator =
+          smgr->createFlyStraightAnimator(ic::vector3df(3,1,24),
+                                          ic::vector3df(3,1,0),
+                                          roadLength/10.0f/backgroundSpeed*1000*2,
+                                          true
+                                          );
+  is::ISceneNodeAnimator * rightWallAnimator =
+          smgr->createFlyStraightAnimator(ic::vector3df(5,1,24),
+                                          ic::vector3df(5,1,0),
+                                          roadLength/10.0f/backgroundSpeed*1000*2,
+                                          true
+                                          );
+//  iv::ITexture * leftWallTex = driver->getTexture("data/Wall_left.png");
+//  iv::ITexture * middleWallTex = driver->getTexture("data/Wall_middle.png");
+//  iv::ITexture * rightWallTex = driver->getTexture("data/Wall_right.png");
+  iv::ITexture * leftWallTex = driver->getTexture("data/shapes/Shape_UU_t.png");
+  iv::ITexture * middleWallTex = driver->getTexture("data/shapes/Shape_UD_t.png");
+  iv::ITexture * rightWallTex = driver->getTexture("data/shapes/Shape_DD_t.png");
 
+  leftWallNode->addAnimator(leftWallAnimator);
+  leftWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  leftWallNode->setMaterialTexture(0, leftWallTex);
+  leftWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+  middleWallNode->addAnimator(middleWallAnimator);
+  middleWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  middleWallNode->setMaterialTexture(0, middleWallTex);
+  middleWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+
+  rightWallNode->addAnimator(rightWallAnimator);
+  rightWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  rightWallNode->setMaterialTexture(0, rightWallTex);
+  rightWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
 
   while(device->run())
   {
