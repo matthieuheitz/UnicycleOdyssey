@@ -112,19 +112,19 @@ int main()
           smgr->createFlyStraightAnimator(ic::vector3df(1,1,24),
                                           ic::vector3df(1,1,0),
                                           roadLength/10.0f/backgroundSpeed*1000*2,
-                                          true
+                                          false
                                           );
   is::ISceneNodeAnimator * middleWallAnimator =
           smgr->createFlyStraightAnimator(ic::vector3df(3,1,24),
                                           ic::vector3df(3,1,0),
                                           roadLength/10.0f/backgroundSpeed*1000*2,
-                                          true
+                                          false
                                           );
   is::ISceneNodeAnimator * rightWallAnimator =
           smgr->createFlyStraightAnimator(ic::vector3df(5,1,24),
                                           ic::vector3df(5,1,0),
                                           roadLength/10.0f/backgroundSpeed*1000*2,
-                                          true
+                                          false
                                           );
 //  iv::ITexture * leftWallTex = driver->getTexture("data/Wall_left.png");
 //  iv::ITexture * middleWallTex = driver->getTexture("data/Wall_middle.png");
@@ -164,6 +164,30 @@ int main()
 
 	node->setPosition(nodePosition);
 
+    if(leftWallAnimator->hasFinished())
+    {
+        std::cout<<"Fini !"<<std::endl;
+        leftWallAnimator = smgr->createFlyStraightAnimator(
+                ic::vector3df(1,1,24),
+                ic::vector3df(1,1,0),
+                roadLength/10.0f/backgroundSpeed*1000*2,
+                false
+                );
+        middleWallAnimator = smgr->createFlyStraightAnimator(
+                ic::vector3df(3,1,24),
+                ic::vector3df(3,1,0),
+                roadLength/10.0f/backgroundSpeed*1000*2,
+                false
+                );
+        rightWallAnimator = smgr->createFlyStraightAnimator(
+                ic::vector3df(5,1,24),
+                ic::vector3df(5,1,0),
+                roadLength/10.0f/backgroundSpeed*1000*2,
+                false
+                );
+        leftWallNode->addAnimator(leftWallAnimator);
+        middleWallNode->addAnimator(middleWallAnimator);
+        rightWallNode->addAnimator(rightWallAnimator);
     // Draw the scene
     smgr->drawAll();
 
