@@ -136,17 +136,17 @@ int main()
   leftWallNode->addAnimator(leftWallAnimator);
   leftWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   leftWallNode->setMaterialTexture(0, leftWallTex);
-  leftWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+  leftWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
   middleWallNode->addAnimator(middleWallAnimator);
   middleWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   middleWallNode->setMaterialTexture(0, middleWallTex);
-  middleWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+  middleWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
   rightWallNode->addAnimator(rightWallAnimator);
   rightWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   rightWallNode->setMaterialTexture(0, rightWallTex);
-  rightWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL);
+  rightWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
   while(device->run())
   {
