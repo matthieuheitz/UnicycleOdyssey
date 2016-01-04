@@ -187,11 +187,6 @@ int main()
     core::vector3df nodePosition = node_character->getPosition();
     core::vector3df nodeBikePosition = node_bike->getPosition();
 
-    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
-        nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
-    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-        nodePosition.X += characterTransversalSpeed * frameDeltaTime;
-
     if(leftWallAnimator->hasFinished())
     {
         std::cout<<"Fini !"<<std::endl;
