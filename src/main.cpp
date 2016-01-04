@@ -101,10 +101,10 @@ int main()
   is::IAnimatedMesh *mesh_character = smgr->getMesh("data/character.x");
   // Creating node from mesh
   is::IAnimatedMeshSceneNode *node_character = smgr->addAnimatedMeshSceneNode(mesh_character);
-  ic::vector3df scale(0.02,0.02,0.02 );
+  ic::vector3df scale(0.19,0.19,0.19 );
   node_character->setScale( scale );
   node_character->setRotation(ic::vector3df(0,180,0));
-  node_character->setPosition(ic::vector3df(2.5,2,0.5));
+  node_character->setPosition(ic::vector3df(3,0.2,3.0));
   node_character->setMaterialFlag(video::EMF_LIGHTING, false);
 
   /** Testing texture, to be changed **/
@@ -120,10 +120,10 @@ int main()
   
   // Creating node from mesh
   is::IAnimatedMeshSceneNode *node_bike = smgr->addAnimatedMeshSceneNode(mesh_bike);
-  ic::vector3df scale_bike(0.2,0.2,0.2 );
+  ic::vector3df scale_bike(1,1,1);
   node_bike->setScale( scale_bike );
   node_bike->setRotation(ic::vector3df(-90,90,0));
-  node_bike->setPosition(ic::vector3df(2.5,2,0.55));
+  node_bike->setPosition(ic::vector3df(3,0.2,3.35));
   node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
 
   int state_left_arm = 0; // 0 for rest position, -1 for down, +1 for up
