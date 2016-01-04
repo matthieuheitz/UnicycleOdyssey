@@ -85,7 +85,11 @@ std::ostream& operator<<(std::ostream& out, const iv::SColorf color)
 is::IMesh * loadIMeshFromOBJ(is::ISceneManager * smgr, const char * filepath)
 {
     is::IMesh * mesh = smgr->getMesh(filepath);
-
+    if(mesh == NULL)
+    {
+        std::cerr<<"Cannot load "<<filepath<<" in the scene"<<std::endl;
+        return NULL;
+    }
     iv::S3DVertex* vertexArray = (iv::S3DVertex*)mesh->getMeshBuffer(0)->getVertices();
     for(int i=0 ; i < mesh->getMeshBuffer(0)->getVertexCount() ; i++)
     {
