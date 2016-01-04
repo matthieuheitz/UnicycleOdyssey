@@ -84,9 +84,9 @@ int main()
   // Create nodes for the ground
   is::IMeshSceneNode * groundNode = smgr->addMeshSceneNode(groundMesh);
   is::ISceneNodeAnimator * groundAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(0,0,-1),
-                                          ic::vector3df(0,0,-11),
-                                          roadLength/10.0f/backgroundSpeed*1000,
+          smgr->createFlyStraightAnimator(ic::vector3df(0,0,0),
+                                          ic::vector3df(0,0,-24),
+                                          roadLength/10.0f/backgroundSpeed*1000*2,
                                           true
                                           );
   // Initialize the mesh node
