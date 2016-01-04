@@ -94,7 +94,7 @@ int main()
   groundNode->setScale(ic::vector3df(roadWidth,1,roadLength));
   groundNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   groundNode->setMaterialTexture(0, groundTex);
-  groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
+//  groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
   groundNode->addAnimator(groundAnimator);
     
   // Loading a character mesh
