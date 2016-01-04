@@ -167,15 +167,24 @@ int main()
   leftWallNode->setMaterialTexture(0, leftWallTex);
   leftWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
+  leftWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
+  leftWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
+
   middleWallNode->addAnimator(middleWallAnimator);
   middleWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   middleWallNode->setMaterialTexture(0, shapeDDTex);
   middleWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
+  middleWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
+  middleWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
+
   rightWallNode->addAnimator(rightWallAnimator);
   rightWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   rightWallNode->setMaterialTexture(0, rightWallTex);
   rightWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
+
+  rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
+  rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
 
   while(device->run())
   {
