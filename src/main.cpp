@@ -1,5 +1,6 @@
 #include <irrlicht.h>
 #include <iostream>
+#include <math.h>
 
 #include "irrlichtDebug.hpp"
 
@@ -69,9 +70,15 @@ int main()
   float frameDeltaTime = 1/60.0f;
 
   // Initialize the camera
-  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
-  camera->setTarget(ic::vector3df(2.5,0,3));
-  camera->setPosition(ic::vector3df(2.5,2.0,0));
+//  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
+//  camera->setTarget(ic::vector3df(2.5,0,3));
+//  camera->setPosition(ic::vector3df(2.5,2.0,0));
+//  camera->setNearValue(0.1);
+
+  is::ICameraSceneNode *camera = smgr->addCameraSceneNode(nullptr, ic::vector3df(0, 30, -40), ic::vector3df(0, 5, 0));
+    camera->setTarget(ic::vector3df(2.5,2,3));
+    camera->setPosition(ic::vector3df(2.5,2.2,0.3));
+    camera->setNearValue(0.1);
 
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
@@ -93,13 +100,36 @@ int main()
   groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
   groundNode->addAnimator(groundAnimator);
     
-  // Loading a mesh
-  is::IAnimatedMesh *mesh = smgr->getMesh("data/test_with_bones_and_skinweights_and_modif.x");
-
+  // Loading a character mesh
+  is::IAnimatedMesh *mesh_character = smgr->getMesh("data/character.x");
   // Creating node from mesh
-  is::IAnimatedMeshSceneNode *node = smgr->addAnimatedMeshSceneNode(mesh);
-  //ic::vector3df scale(0.005,0.005,0.005);
-  //node->setScale( scale );
+  is::IAnimatedMeshSceneNode *node_character = smgr->addAnimatedMeshSceneNode(mesh_character);
+  ic::vector3df scale(0.02,0.02,0.02 );
+  node_character->setScale( scale );
+  node_character->setRotation(ic::vector3df(0,180,0));
+  node_character->setPosition(ic::vector3df(2.5,2,0.5));
+  node_character->setMaterialFlag(video::EMF_LIGHTING, false);
+
+  /** Testing texture, to be changed **/
+  //node_character->setMaterialTexture( 0, driver->getTexture("data/mountain.jpg") );
+  //node_character->setMaterialType( video::EMT_SOLID );
+  /** **/
+
+  node_character->setFrameLoop(1, 1);
+  node_character->setAnimationSpeed(15);
+
+  // Loading a bike mesh
+  is::IAnimatedMesh *mesh_bike = smgr->getMesh("data/bike.x");
+  // Creating node from mesh
+  is::IAnimatedMeshSceneNode *node_bike = smgr->addAnimatedMeshSceneNode(mesh_bike);
+  ic::vector3df scale_bike(0.2,0.2,0.2 );
+  node_bike->setScale( scale_bike );
+  node_bike->setRotation(ic::vector3df(-90,90,0));
+  node_bike->setPosition(ic::vector3df(2.5,2,0.55));
+  node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
+
+  int state_left_arm = 0; // 0 for rest position, -1 for down, +1 for up
+  int state_right_arm = 0;
 
   // Create walls
   is::IMeshSceneNode * wallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(2.5,1,5),
@@ -123,14 +153,91 @@ int main()
     // Draw Axes
     drawAxes(driver);
 
-    core::vector3df nodePosition = node->getPosition();
+    core::vector3df nodePosition = node_character->getPosition();
+    core::vector3df nodeBikePosition = node_bike->getPosition();
+
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_P))
+    {
+        state_left_arm = 1;
+           if(state_right_arm == 0)
+           {
+               node_character->setFrameLoop(80,80);
+           }
+           else if(state_right_arm == 1)
+           {
+               node_character->setFrameLoop(10,10);
+           }
+           else if(state_right_arm == -1)
+           {
+               node_character->setFrameLoop(40,40);
+           }
+    }
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_M))
+    {
+        state_left_arm = -1;
+           if(state_right_arm == 0)
+           {
+               node_character->setFrameLoop(20,20);
+           }
+           else if(state_right_arm == 1)
+           {
+               node_character->setFrameLoop(90,90);
+           }
+           else if(state_right_arm == -1)
+           {
+               node_character->setFrameLoop(50,50);
+           }
+    }
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_I))
+    {
+        state_right_arm = 1;
+           if(state_left_arm == 0)
+           {
+               node_character->setFrameLoop(70,70);
+           }
+           else if(state_left_arm == 1)
+           {
+               node_character->setFrameLoop(10,10);
+           }
+           else if(state_left_arm == -1)
+           {
+               node_character->setFrameLoop(90,90);
+           }
+    }
+
+    if(receiver.IsKeyDown(irr::KEY_KEY_K))
+    {
+        state_right_arm = -1;
+           if(state_left_arm == 0)
+           {
+               node_character->setFrameLoop(30,30);
+           }
+           else if(state_left_arm == 1)
+           {
+               node_character->setFrameLoop(40,40);
+           }
+           else if(state_left_arm == -1)
+           {
+               node_character->setFrameLoop(50,50);
+           }
+    }
 
     if(receiver.IsKeyDown(irr::KEY_KEY_Q))
+    {
         nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
+        nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
+    }
     else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+    {
         nodePosition.X += characterTransversalSpeed * frameDeltaTime;
+        nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
+    }
 
-	node->setPosition(nodePosition);
+    node_character->setPosition(nodePosition);
+    node_bike->setPosition(nodeBikePosition);
 
     // Draw the scene
     smgr->drawAll();
