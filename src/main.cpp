@@ -80,6 +80,10 @@ int main()
   float characterTransversalSpeed = roadWidth/1.0;
   float frameDeltaTime = 1/60.0f;
 
+  // Current wall and shape chosen
+  int wallNumber = 1;
+  int shapeNumber = 3;
+
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
   camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
@@ -300,12 +304,12 @@ int main()
 		rightWallNode->addAnimator(rightWallAnimator);
 
 		// Randomly set a shape in a wall
-		int wall = rand()%3;
-		int shape = rand()%4;
-		switch(shape)
+		wallNumber = rand()%3;
+		shapeNumber = rand()%4;
+		switch(shapeNumber)
 		{
 		case 0:
-		    switch(wall)
+		    switch(wallNumber)
 		    {
 		    case 0:
 		        leftWallNode->setMaterialTexture(0, shapeUUTex);
@@ -328,7 +332,7 @@ int main()
 		    break;
 
 		case 1:
-		    switch(wall)
+		    switch(wallNumber)
 		    {
 		    case 0:
 		        leftWallNode->setMaterialTexture(0, shapeDUTex);
@@ -351,7 +355,7 @@ int main()
 		    break;
 
 		case 2:
-		    switch(wall)
+		    switch(wallNumber)
 		    {
 		    case 0:
 		        leftWallNode->setMaterialTexture(0, shapeUDTex);
@@ -374,7 +378,7 @@ int main()
 		    break;
 
 		case 3:
-		    switch(wall)
+		    switch(wallNumber)
 		    {
 		    case 0:
 		        leftWallNode->setMaterialTexture(0, shapeDDTex);
