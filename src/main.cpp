@@ -198,7 +198,9 @@ int main()
 
     if(leftWallAnimator->hasFinished())
     {
-        std::cout<<"Fini !"<<std::endl;
+        // Increase speed
+        backgroundSpeed += 0.5;
+
         leftWallAnimator = smgr->createFlyStraightAnimator(
                 ic::vector3df(1,1,24),
                 ic::vector3df(1,1,0),
