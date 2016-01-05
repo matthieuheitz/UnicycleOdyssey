@@ -81,6 +81,8 @@ int main()
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
   iv::ITexture * groundTex = driver->getTexture("data/Bois.png");
 
+
+
   // Create nodes for the ground
   is::IMeshSceneNode * groundNode = smgr->addMeshSceneNode(groundMesh);
   is::ISceneNodeAnimator * groundAnimator =
@@ -89,13 +91,53 @@ int main()
                                           roadLength/10.0f/backgroundSpeed*1000*2,
                                           true
                                           );
-  // Initialize the mesh node
+
+
+
+
+  // Initialize the ground mesh node
   groundNode->setPosition(ic::vector3df(0,0,0));
   groundNode->setScale(ic::vector3df(roadWidth,1,roadLength));
   groundNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
   groundNode->setMaterialTexture(0, groundTex);
 //  groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
   groundNode->addAnimator(groundAnimator);
+
+  // Load sky
+  is::IMesh * skyMesh = loadIMeshFromOBJ(smgr, "data/sky.obj");
+  iv::ITexture * skyText = driver->getTexture("data/sky.jpg");  
+
+  // Create nodes for the sky
+  is::IMeshSceneNode * skyNode = smgr->addMeshSceneNode(skyMesh);
+  // Initialize the sky mesh node
+  skyNode->setPosition(ic::vector3df(-50,-10,50));
+  skyNode->setRotation(ic::vector3df(-90,0,0));
+  skyNode->setScale(ic::vector3df(100,100,100));
+  skyNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  skyNode->setMaterialTexture(0, skyText);
+//  skyNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
+
+  // Load grass
+  is::IMesh * grassMesh = loadIMeshFromOBJ(smgr, "data/grass.obj");
+  iv::ITexture * grassText = driver->getTexture("data/grass.jpg");  
+
+
+  is::ISceneNodeAnimator * grassAnimator =
+          smgr->createFlyStraightAnimator(ic::vector3df(-50,-0.1,0),
+                                          ic::vector3df(-50,-0.1,-24),
+                                          roadLength/10.0f/backgroundSpeed*1000*2,
+                                          true
+                                          );
+  // Create nodes for the grass
+  is::IMeshSceneNode * grassNode = smgr->addMeshSceneNode(grassMesh);
+  // Initialize the grass mesh node
+  grassNode->setPosition(ic::vector3df(-50,-0.1,0));
+  grassNode->setRotation(ic::vector3df(0,0,0));
+  grassNode->setScale(ic::vector3df(100,100,100));
+  grassNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+  grassNode->setMaterialTexture(0, grassText);
+  grassNode->addAnimator(grassAnimator);
+//  skyNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
     
   // Loading a character mesh
   is::IAnimatedMesh *mesh_character = smgr->getMesh("data/character.x");
