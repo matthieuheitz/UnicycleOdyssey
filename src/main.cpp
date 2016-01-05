@@ -9,6 +9,7 @@ using namespace irr;
 namespace ic = irr::core;
 namespace is = irr::scene;
 namespace iv = irr::video;
+namespace ig = irr::gui;
 
 // Prototypes
 void drawAxes(irr::video::IVideoDriver * driver);
@@ -56,9 +57,12 @@ int main()
   IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
                                         ic::dimension2d<u32>(640, 480),
                                         16, false, false, false, &receiver);
+  device->setWindowCaption(L"Unicycle Odyssey");
+  device->setResizable(false);
 
   iv::IVideoDriver  *driver = device->getVideoDriver();
   is::ISceneManager *smgr = device->getSceneManager();
+  ig::IGUIEnvironment *gui = device->getGUIEnvironment();
 
   // Global variables
   // Speeds are in m/s
@@ -67,6 +71,10 @@ int main()
   float backgroundSpeed = 4.0;
   float roadLength = 100;
   float roadWidth = 6;
+  int armState = 4; // 0 for rest position, 1 for UU, 2 for UD, 3 for DU, 4 for DD
+  
+  int width = device->getVideoDriver()->getScreenSize().Width;
+  int height = device->getVideoDriver()->getScreenSize().Height;
 
   // We want the character to cross the road in 1 sec
   float characterTransversalSpeed = roadWidth/1.0;
@@ -76,6 +84,23 @@ int main()
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
   camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
   camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
+
+  iv::ITexture *startScreenText;
+  iv::ITexture *startButtonText;
+
+  startScreenText = driver->getTexture("data/startScreen.png");
+  startButtonText = driver->getTexture("data/startButton.png");
+
+  ig::IGUIImage *imageStartScreen   = gui->addImage(ic::rect<s32>(0,0,  width, height));
+  imageStartScreen->setUseAlphaChannel(true);
+  imageStartScreen->setImage(startScreenText);
+  imageStartScreen->setScaleImage(true);
+
+    ig::IGUIButton *startButton = gui->addButton(ic::rect<s32>(width/2 - 100, height/2 - 50, width/2 + 100, height/2 + 50));
+    startButton->setScaleImage(true);
+    startButton->setImage(startButtonText);
+    startButton->setUseAlphaChannel(true);
+    startButton->setDrawBorder(false);
 
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
@@ -154,7 +179,7 @@ int main()
   //node_character->setMaterialType( video::EMT_SOLID );
   /** **/
 
-  node_character->setFrameLoop(1, 1);
+  node_character->setFrameLoop(50, 50);
   node_character->setAnimationSpeed(15);
 
   // Loading a bike mesh
@@ -168,8 +193,8 @@ int main()
   node_bike->setPosition(ic::vector3df(3,0.2,3.35));
   node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
 
-  int state_left_arm = 0; // 0 for rest position, -1 for down, +1 for up
-  int state_right_arm = 0;
+  int state_left_arm = -1; // 0 for rest position, -1 for down, +1 for up
+  int state_right_arm = -1;
 
   // Create walls
   is::IMeshSceneNode * leftWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(1, 1, 5),
@@ -235,220 +260,224 @@ int main()
     // Draw Axes
     drawAxes(driver);
 
-    core::vector3df nodePosition = node_character->getPosition();
-    core::vector3df nodeBikePosition = node_bike->getPosition();
-
-    if(leftWallAnimator->hasFinished())
+    if(startButton->isPressed() && startButton->isEnabled())
     {
-        // Increase speed
-        backgroundSpeed += 0.5;
-
-        leftWallAnimator = smgr->createFlyStraightAnimator(
-                ic::vector3df(1,1,24),
-                ic::vector3df(1,1,0),
-                roadLength/10.0f/backgroundSpeed*1000*2,
-                false
-                );
-        middleWallAnimator = smgr->createFlyStraightAnimator(
-                ic::vector3df(3,1,24),
-                ic::vector3df(3,1,0),
-                roadLength/10.0f/backgroundSpeed*1000*2,
-                false
-                );
-        rightWallAnimator = smgr->createFlyStraightAnimator(
-                ic::vector3df(5,1,24),
-                ic::vector3df(5,1,0),
-                roadLength/10.0f/backgroundSpeed*1000*2,
-                false
-                );
-        leftWallNode->addAnimator(leftWallAnimator);
-        middleWallNode->addAnimator(middleWallAnimator);
-        rightWallNode->addAnimator(rightWallAnimator);
-
-        // Randomly set a shape in a wall
-        int wall = rand()%3;
-        int shape = rand()%4;
-        switch(shape)
-        {
-        case 0:
-            switch(wall)
-            {
-            case 0:
-                leftWallNode->setMaterialTexture(0, shapeUUTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 1:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, shapeUUTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 2:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, shapeUUTex);
-                break;
-            }
-            break;
-
-        case 1:
-            switch(wall)
-            {
-            case 0:
-                leftWallNode->setMaterialTexture(0, shapeDUTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 1:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, shapeDUTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 2:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, shapeDUTex);
-                break;
-            }
-            break;
-
-        case 2:
-            switch(wall)
-            {
-            case 0:
-                leftWallNode->setMaterialTexture(0, shapeUDTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 1:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, shapeUDTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 2:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, shapeUDTex);
-                break;
-            }
-            break;
-
-        case 3:
-            switch(wall)
-            {
-            case 0:
-                leftWallNode->setMaterialTexture(0, shapeDDTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 1:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, shapeDDTex);
-                rightWallNode->setMaterialTexture(0, rightWallTex);
-                break;
-
-            case 2:
-                leftWallNode->setMaterialTexture(0, leftWallTex);
-                middleWallNode->setMaterialTexture(0, middleWallTex);
-                rightWallNode->setMaterialTexture(0, shapeDDTex);
-                break;
-            }
-            break;
-
-        }
+     
+        startButton->setVisible(false);
+        startButton->setEnabled(false);
+        imageStartScreen->setVisible(false);
     }
-
-	if(receiver.IsKeyDown(irr::KEY_KEY_P))
+    else
     {
-        state_left_arm = 1;
-           if(state_right_arm == 0)
-           {
-               node_character->setFrameLoop(80,80);
-           }
-           else if(state_right_arm == 1)
-           {
-               node_character->setFrameLoop(10,10);
-           }
-           else if(state_right_arm == -1)
-           {
-               node_character->setFrameLoop(40,40);
-           }
-    }
+	    core::vector3df nodePosition = node_character->getPosition();
+	    core::vector3df nodeBikePosition = node_bike->getPosition();
 
-    if(receiver.IsKeyDown(irr::KEY_KEY_M))
-    {
-        state_left_arm = -1;
-           if(state_right_arm == 0)
-           {
-               node_character->setFrameLoop(20,20);
-           }
-           else if(state_right_arm == 1)
-           {
-               node_character->setFrameLoop(90,90);
-           }
-           else if(state_right_arm == -1)
-           {
-               node_character->setFrameLoop(50,50);
-           }
-    }
+	    if(leftWallAnimator->hasFinished())
+	    {
+		// Increase speed
+		backgroundSpeed += 0.5;
 
-    if(receiver.IsKeyDown(irr::KEY_KEY_I))
-    {
-        state_right_arm = 1;
-           if(state_left_arm == 0)
-           {
-               node_character->setFrameLoop(70,70);
-           }
-           else if(state_left_arm == 1)
-           {
-               node_character->setFrameLoop(10,10);
-           }
-           else if(state_left_arm == -1)
-           {
-               node_character->setFrameLoop(90,90);
-           }
-    }
+		leftWallAnimator = smgr->createFlyStraightAnimator(
+		        ic::vector3df(1,1,24),
+		        ic::vector3df(1,1,0),
+		        roadLength/10.0f/backgroundSpeed*1000*2,
+		        false
+		        );
+		middleWallAnimator = smgr->createFlyStraightAnimator(
+		        ic::vector3df(3,1,24),
+		        ic::vector3df(3,1,0),
+		        roadLength/10.0f/backgroundSpeed*1000*2,
+		        false
+		        );
+		rightWallAnimator = smgr->createFlyStraightAnimator(
+		        ic::vector3df(5,1,24),
+		        ic::vector3df(5,1,0),
+		        roadLength/10.0f/backgroundSpeed*1000*2,
+		        false
+		        );
+		leftWallNode->addAnimator(leftWallAnimator);
+		middleWallNode->addAnimator(middleWallAnimator);
+		rightWallNode->addAnimator(rightWallAnimator);
 
-    if(receiver.IsKeyDown(irr::KEY_KEY_K))
-    {
-        state_right_arm = -1;
-           if(state_left_arm == 0)
-           {
-               node_character->setFrameLoop(30,30);
-           }
-           else if(state_left_arm == 1)
-           {
-               node_character->setFrameLoop(40,40);
-           }
-           else if(state_left_arm == -1)
-           {
-               node_character->setFrameLoop(50,50);
-           }
-    }
+		// Randomly set a shape in a wall
+		int wall = rand()%3;
+		int shape = rand()%4;
+		switch(shape)
+		{
+		case 0:
+		    switch(wall)
+		    {
+		    case 0:
+		        leftWallNode->setMaterialTexture(0, shapeUUTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
 
-    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
-    {
-        nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
-        nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
-    }
-    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-    {
-        nodePosition.X += characterTransversalSpeed * frameDeltaTime;
-        nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
-    }
+		    case 1:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, shapeUUTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
 
-	node_character->setPosition(nodePosition);
-    node_bike->setPosition(nodeBikePosition);
+		    case 2:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, shapeUUTex);
+		        break;
+		    }
+		    break;
 
-    // Draw the scene
-    smgr->drawAll();
+		case 1:
+		    switch(wall)
+		    {
+		    case 0:
+		        leftWallNode->setMaterialTexture(0, shapeDUTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
+
+		    case 1:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, shapeDUTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
+
+		    case 2:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, shapeDUTex);
+		        break;
+		    }
+		    break;
+
+		case 2:
+		    switch(wall)
+		    {
+		    case 0:
+		        leftWallNode->setMaterialTexture(0, shapeUDTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
+
+		    case 1:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, shapeUDTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
+
+		    case 2:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, shapeUDTex);
+		        break;
+		    }
+		    break;
+
+		case 3:
+		    switch(wall)
+		    {
+		    case 0:
+		        leftWallNode->setMaterialTexture(0, shapeDDTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
+
+		    case 1:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, shapeDDTex);
+		        rightWallNode->setMaterialTexture(0, rightWallTex);
+		        break;
+
+		    case 2:
+		        leftWallNode->setMaterialTexture(0, leftWallTex);
+		        middleWallNode->setMaterialTexture(0, middleWallTex);
+		        rightWallNode->setMaterialTexture(0, shapeDDTex);
+		        break;
+		    }
+		    break;
+
+		}
+	    }
+
+		if(receiver.IsKeyDown(irr::KEY_KEY_P))
+	    {
+		   state_left_arm = 1;
+		   if(state_right_arm == 1)
+		   {
+		       node_character->setFrameLoop(10,10);
+		       armState = 1;
+		   }
+		   else if(state_right_arm == -1)
+		   {
+		       node_character->setFrameLoop(40,40);
+		       armState = 2;
+		   }
+	    }
+
+	    if(receiver.IsKeyDown(irr::KEY_KEY_M))
+	    {
+		   state_left_arm = -1;
+		   if(state_right_arm == 1)
+		   {
+		       node_character->setFrameLoop(90,90);
+		       armState = 3;
+		   }
+		   else if(state_right_arm == -1)
+		   {
+		       node_character->setFrameLoop(50,50);
+		       armState = 4;
+		   }
+	    }
+
+	    if(receiver.IsKeyDown(irr::KEY_KEY_I))
+	    {
+		   state_right_arm = 1;
+             if(state_left_arm == 1)
+		   {
+		       node_character->setFrameLoop(10,10);
+		       armState = 1;
+		   }
+		   else if(state_left_arm == -1)
+		   {
+		       node_character->setFrameLoop(90,90);
+		       armState = 3;
+		   }
+	    }
+
+	    if(receiver.IsKeyDown(irr::KEY_KEY_K))
+	    {
+		   state_right_arm = -1;
+             if(state_left_arm == 1)
+		   {
+		       node_character->setFrameLoop(40,40);
+		       armState = 2;
+		   }
+		   else if(state_left_arm == -1)
+		   {
+		       node_character->setFrameLoop(50,50);
+		       armState = 4;
+		   }
+	    }
+
+	    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
+	    {
+		nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
+		nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
+	    }
+	    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+	    {
+		nodePosition.X += characterTransversalSpeed * frameDeltaTime;
+		nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
+	    }
+
+          node_character->setPosition(nodePosition);
+          node_bike->setPosition(nodeBikePosition);    
+          // Draw the scene
+          smgr->drawAll();
+    }
+    gui->drawAll();
+
+
 
     driver->endScene();
   }
