@@ -71,6 +71,7 @@ int main()
   float backgroundSpeed = 4.0;
   float roadLength = 100;
   float roadWidth = 6;
+  int armState = 4; // 0 for rest position, 1 for UU, 2 for UD, 3 for DU, 4 for DD
   
   int width = device->getVideoDriver()->getScreenSize().Width;
   int height = device->getVideoDriver()->getScreenSize().Height;
@@ -178,7 +179,7 @@ int main()
   //node_character->setMaterialType( video::EMT_SOLID );
   /** **/
 
-  node_character->setFrameLoop(1, 1);
+  node_character->setFrameLoop(50, 50);
   node_character->setAnimationSpeed(15);
 
   // Loading a bike mesh
@@ -192,8 +193,8 @@ int main()
   node_bike->setPosition(ic::vector3df(3,0.2,3.35));
   node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
 
-  int state_left_arm = 0; // 0 for rest position, -1 for down, +1 for up
-  int state_right_arm = 0;
+  int state_left_arm = -1; // 0 for rest position, -1 for down, +1 for up
+  int state_right_arm = -1;
 
   // Create walls
   is::IMeshSceneNode * leftWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(1, 1, 5),
@@ -400,69 +401,61 @@ int main()
 
 		if(receiver.IsKeyDown(irr::KEY_KEY_P))
 	    {
-		state_left_arm = 1;
-		   if(state_right_arm == 0)
-		   {
-		       node_character->setFrameLoop(80,80);
-		   }
-		   else if(state_right_arm == 1)
+		   state_left_arm = 1;
+		   if(state_right_arm == 1)
 		   {
 		       node_character->setFrameLoop(10,10);
+		       armState = 1;
 		   }
 		   else if(state_right_arm == -1)
 		   {
 		       node_character->setFrameLoop(40,40);
+		       armState = 2;
 		   }
 	    }
 
 	    if(receiver.IsKeyDown(irr::KEY_KEY_M))
 	    {
-		state_left_arm = -1;
-		   if(state_right_arm == 0)
-		   {
-		       node_character->setFrameLoop(20,20);
-		   }
-		   else if(state_right_arm == 1)
+		   state_left_arm = -1;
+		   if(state_right_arm == 1)
 		   {
 		       node_character->setFrameLoop(90,90);
+		       armState = 3;
 		   }
 		   else if(state_right_arm == -1)
 		   {
 		       node_character->setFrameLoop(50,50);
+		       armState = 4;
 		   }
 	    }
 
 	    if(receiver.IsKeyDown(irr::KEY_KEY_I))
 	    {
-		state_right_arm = 1;
-		   if(state_left_arm == 0)
-		   {
-		       node_character->setFrameLoop(70,70);
-		   }
-		   else if(state_left_arm == 1)
+		   state_right_arm = 1;
+             if(state_left_arm == 1)
 		   {
 		       node_character->setFrameLoop(10,10);
+		       armState = 1;
 		   }
 		   else if(state_left_arm == -1)
 		   {
 		       node_character->setFrameLoop(90,90);
+		       armState = 3;
 		   }
 	    }
 
 	    if(receiver.IsKeyDown(irr::KEY_KEY_K))
 	    {
-		state_right_arm = -1;
-		   if(state_left_arm == 0)
-		   {
-		       node_character->setFrameLoop(30,30);
-		   }
-		   else if(state_left_arm == 1)
+		   state_right_arm = -1;
+             if(state_left_arm == 1)
 		   {
 		       node_character->setFrameLoop(40,40);
+		       armState = 2;
 		   }
 		   else if(state_left_arm == -1)
 		   {
 		       node_character->setFrameLoop(50,50);
+		       armState = 4;
 		   }
 	    }
 
