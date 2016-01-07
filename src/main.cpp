@@ -117,6 +117,26 @@ int main()
   startButton->setUseAlphaChannel(true);
   startButton->setDrawBorder(false);
 
+  iv::ITexture *digits[10];
+  digits[0] = driver->getTexture("data/0.png");
+  digits[1] = driver->getTexture("data/1.png");
+  digits[2] = driver->getTexture("data/2.png");
+  digits[3] = driver->getTexture("data/3.png");
+  digits[4] = driver->getTexture("data/4.png");
+  digits[5] = driver->getTexture("data/5.png");
+  digits[6] = driver->getTexture("data/6.png");
+  digits[7] = driver->getTexture("data/7.png");
+  digits[8] = driver->getTexture("data/8.png");
+  digits[9] = driver->getTexture("data/9.png");
+
+  ig::IGUIImage *score_10000 = gui->addImage(ic::rect<s32>(10,10,  50,50)); score_10000->setScaleImage(true);
+  ig::IGUIImage *score_1000  = gui->addImage(ic::rect<s32>(50,10,  90,50)); score_1000->setScaleImage(true);
+  ig::IGUIImage *score_100   = gui->addImage(ic::rect<s32>(90,10,  130,50)); score_100->setScaleImage(true);
+  ig::IGUIImage *score_10    = gui->addImage(ic::rect<s32>(130,10, 170,50)); score_10->setScaleImage(true);
+  ig::IGUIImage *score_1     = gui->addImage(ic::rect<s32>(170,10, 210,50)); score_1->setScaleImage(true);
+
+  int score = 0;
+
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
   iv::ITexture * groundTex = driver->getTexture("data/Bois.png");
@@ -277,172 +297,186 @@ int main()
     // Draw Axes
     drawAxes(driver);
 
-    if(startButton->isPressed() && startButton->isEnabled())
+    if(receiver.IsKeyDown(irr::KEY_RETURN))
     {
-     
-        startButton->setVisible(false);
-        startButton->setEnabled(false);
-        imageStartScreen->setVisible(false);
+        startButton->setPressed(true);
+    }
+
+    if(startButton->isPressed() == false && startButton->isEnabled() == true)
+    {
+        gui->drawAll();
+        driver->endScene();
     }
     else
     {
-	    core::vector3df nodePosition = node_character->getPosition();
-	    core::vector3df nodeBikePosition = node_bike->getPosition();
-
-	    if(leftWallAnimator->hasFinished())
-	    {
-            // Increase speed
-            backgroundSpeed += 0.5;
-            characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
-
-            leftWallAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(1,1,24),
-                    ic::vector3df(1,1,0),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    false
-                    );
-            middleWallAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(3,1,24),
-                    ic::vector3df(3,1,0),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    false
-                    );
-            rightWallAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(5,1,24),
-                    ic::vector3df(5,1,0),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    false
-                        );
-            grassAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(-50,-0.1,0),
-                    ic::vector3df(-50,-0.1,-24),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    true
-                    );
-            groundAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(0,0,0),
-                    ic::vector3df(0,0,-24),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    true
-                    );
-            leftWallNode->addAnimator(leftWallAnimator);
-            middleWallNode->addAnimator(middleWallAnimator);
-            rightWallNode->addAnimator(rightWallAnimator);
-            grassNode->addAnimator(grassAnimator);
-            groundNode->addAnimator(groundAnimator);
-
-            // Randomly set a shape in a wall
-            wallNumber = rand()%3;
-            shapeNumber = rand()%4;
-            changeWallAndShape(wallNumber, shapeNumber,
-                               leftWallNode, leftWallTex,
-                               middleWallNode, middleWallTex,
-                               rightWallNode, rightWallTex,
-                               shapeUUTex, shapeUDTex,
-                               shapeDUTex, shapeDDTex);
-            alreadyChecked = false;
-	    }
-
-		if(receiver.IsKeyDown(irr::KEY_KEY_P))
-	    {
-		   state_left_arm = 1;
-		   if(state_right_arm == 1)
-		   {
-		       node_character->setFrameLoop(10,10);
-               armState = 0;
-		   }
-		   else if(state_right_arm == -1)
-		   {
-		       node_character->setFrameLoop(40,40);
-               armState = 1;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_M))
-	    {
-		   state_left_arm = -1;
-		   if(state_right_arm == 1)
-		   {
-		       node_character->setFrameLoop(90,90);
-               armState = 2;
-		   }
-		   else if(state_right_arm == -1)
-		   {
-		       node_character->setFrameLoop(50,50);
-               armState = 3;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_I))
-	    {
-		   state_right_arm = 1;
-             if(state_left_arm == 1)
-		   {
-		       node_character->setFrameLoop(10,10);
-               armState = 0;
-		   }
-		   else if(state_left_arm == -1)
-		   {
-		       node_character->setFrameLoop(90,90);
-               armState = 2;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_K))
-	    {
-		   state_right_arm = -1;
-             if(state_left_arm == 1)
-		   {
-		       node_character->setFrameLoop(40,40);
-               armState = 1;
-		   }
-		   else if(state_left_arm == -1)
-		   {
-		       node_character->setFrameLoop(50,50);
-               armState = 3;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
-	    {
-            nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
-            nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
-	    }
-	    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-	    {
-            nodePosition.X += characterTransversalSpeed * frameDeltaTime;
-            nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
-	    }
-
-        node_character->setPosition(nodePosition);
-        node_bike->setPosition(nodeBikePosition);
-
-        if(leftWallNode->getPosition().Z > 3.3 && leftWallNode->getPosition().Z < 4)
+        if(startButton->isPressed() == true && startButton->isEnabled() == true)
         {
-            if(!alreadyChecked)
-            {
-                // Check position
-                if(nodeBikePosition.X < 2*wallNumber + 1 - validWindowLength/2.0
-                        || nodeBikePosition.X > 2*wallNumber + 1 + validWindowLength/2.0
-                        || shapeNumber != armState)
-                {
-                    std::cout<<"Perdu"<<std::endl;
-                    //TODO: Call function for You Lost screen
-                }
-                alreadyChecked = true;
-            }
+            startButton->setVisible(false);
+            startButton->setEnabled(false);
+            imageStartScreen->setVisible(false);
         }
+        else
+        {
+            core::vector3df nodePosition = node_character->getPosition();
+            core::vector3df nodeBikePosition = node_bike->getPosition();
 
+            if(leftWallAnimator->hasFinished())
+            {
+                // Increase speed
+                backgroundSpeed += 0.5;
+                characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
 
-        // Draw the scene
-        smgr->drawAll();
+                leftWallAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(1,1,24),
+                            ic::vector3df(1,1,0),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            false
+                            );
+                middleWallAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(3,1,24),
+                            ic::vector3df(3,1,0),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            false
+                            );
+                rightWallAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(5,1,24),
+                            ic::vector3df(5,1,0),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            false
+                            );
+                grassAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(-50,-0.1,0),
+                            ic::vector3df(-50,-0.1,-24),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            true
+                            );
+                groundAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(0,0,0),
+                            ic::vector3df(0,0,-24),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            true
+                            );
+                leftWallNode->addAnimator(leftWallAnimator);
+                middleWallNode->addAnimator(middleWallAnimator);
+                rightWallNode->addAnimator(rightWallAnimator);
+                grassNode->addAnimator(grassAnimator);
+                groundNode->addAnimator(groundAnimator);
 
+                // Randomly set a shape in a wall
+                wallNumber = rand()%3;
+                shapeNumber = rand()%4;
+                changeWallAndShape(wallNumber, shapeNumber,
+                                   leftWallNode, leftWallTex,
+                                   middleWallNode, middleWallTex,
+                                   rightWallNode, rightWallTex,
+                                   shapeUUTex, shapeUDTex,
+                                   shapeDUTex, shapeDDTex);
+                alreadyChecked = false;
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_P))
+            {
+                state_left_arm = 1;
+                if(state_right_arm == 1)
+                {
+                    node_character->setFrameLoop(10,10);
+                    armState = 0;
+                }
+                else if(state_right_arm == -1)
+                {
+                    node_character->setFrameLoop(40,40);
+                    armState = 1;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_M))
+            {
+                state_left_arm = -1;
+                if(state_right_arm == 1)
+                {
+                    node_character->setFrameLoop(90,90);
+                    armState = 2;
+                }
+                else if(state_right_arm == -1)
+                {
+                    node_character->setFrameLoop(50,50);
+                    armState = 3;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_I))
+            {
+                state_right_arm = 1;
+                if(state_left_arm == 1)
+                {
+                    node_character->setFrameLoop(10,10);
+                    armState = 0;
+                }
+                else if(state_left_arm == -1)
+                {
+                    node_character->setFrameLoop(90,90);
+                    armState = 2;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_K))
+            {
+                state_right_arm = -1;
+                if(state_left_arm == 1)
+                {
+                    node_character->setFrameLoop(40,40);
+                    armState = 1;
+                }
+                else if(state_left_arm == -1)
+                {
+                    node_character->setFrameLoop(50,50);
+                    armState = 3;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_Q))
+            {
+                nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
+                nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
+            }
+            else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+            {
+                nodePosition.X += characterTransversalSpeed * frameDeltaTime;
+                nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
+            }
+
+            node_character->setPosition(nodePosition);
+            node_bike->setPosition(nodeBikePosition);
+
+            if(leftWallNode->getPosition().Z > 3.3 && leftWallNode->getPosition().Z < 4)
+            {
+                if(!alreadyChecked)
+                {
+                    // Check position
+                    if(nodeBikePosition.X < 2*wallNumber + 1 - validWindowLength/2.0
+                            || nodeBikePosition.X > 2*wallNumber + 1 + validWindowLength/2.0
+                            || shapeNumber != armState)
+                    {
+                        std::cout<<"Perdu"<<std::endl;
+                        //TODO: Call function for You Lost screen
+                    }
+                    alreadyChecked = true;
+                }
+            }
+            // Calcul du score :
+            score++; if (score == 50000) score = -1;
+            // Mise à jour du score :
+            score_10000->setImage(digits[(score / 10000) % 10]);
+            score_1000->setImage(digits[(score / 1000) % 10]);
+            score_100->setImage(digits[(score / 100) % 10]);
+            score_10->setImage(digits[(score / 10) % 10]);
+            score_1->setImage(digits[(score / 1) % 10]);
+            // Draw the scene
+            smgr->drawAll();
+        }
+        gui->drawAll();
+        driver->endScene();
     }
-    gui->drawAll();
-
-
-
-    driver->endScene();
   }
   device->drop();
 
