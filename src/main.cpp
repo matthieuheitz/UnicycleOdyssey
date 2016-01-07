@@ -83,8 +83,9 @@ int main()
   int width = device->getVideoDriver()->getScreenSize().Width;
   int height = device->getVideoDriver()->getScreenSize().Height;
 
-  // We want the character to cross the road in 1 sec
-  float characterTransversalSpeed = roadWidth/1.0;
+  // We want the character to be able to cross the road from one
+  // end to the other in the interval of 2 walls
+  float characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
   float frameDeltaTime = 1/60.0f;
 
   // Current wall and shape chosen
@@ -96,7 +97,7 @@ int main()
 
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
-  camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
+  camera->setTarget(ic::vector3df(roadWidth/2.0, 1, 3));
   camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
 
   iv::ITexture *startScreenText;
@@ -149,7 +150,7 @@ int main()
   // Create nodes for the sky
   is::IMeshSceneNode * skyNode = smgr->addMeshSceneNode(skyMesh);
   // Initialize the sky mesh node
-  skyNode->setPosition(ic::vector3df(-50,-10,50));
+  skyNode->setPosition(ic::vector3df(-45,-10,50));
   skyNode->setRotation(ic::vector3df(-90,0,0));
   skyNode->setScale(ic::vector3df(100,100,100));
   skyNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
@@ -292,6 +293,7 @@ int main()
 	    {
             // Increase speed
             backgroundSpeed += 0.5;
+            characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
 
             leftWallAnimator = smgr->createFlyStraightAnimator(
                     ic::vector3df(1,1,24),
@@ -311,9 +313,23 @@ int main()
                     roadLength/10.0f/backgroundSpeed*1000*2,
                     false
                         );
+            grassAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(-50,-0.1,0),
+                    ic::vector3df(-50,-0.1,-24),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    true
+                    );
+            groundAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(0,0,0),
+                    ic::vector3df(0,0,-24),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    true
+                    );
             leftWallNode->addAnimator(leftWallAnimator);
             middleWallNode->addAnimator(middleWallAnimator);
             rightWallNode->addAnimator(rightWallAnimator);
+            grassNode->addAnimator(grassAnimator);
+            groundNode->addAnimator(groundAnimator);
 
             // Randomly set a shape in a wall
             wallNumber = rand()%3;
