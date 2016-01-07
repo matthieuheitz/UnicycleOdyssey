@@ -97,7 +97,7 @@ int main()
 
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
-  camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
+  camera->setTarget(ic::vector3df(roadWidth/2.0, 1, 3));
   camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
 
   iv::ITexture *startScreenText;
@@ -150,7 +150,7 @@ int main()
   // Create nodes for the sky
   is::IMeshSceneNode * skyNode = smgr->addMeshSceneNode(skyMesh);
   // Initialize the sky mesh node
-  skyNode->setPosition(ic::vector3df(-50,-10,50));
+  skyNode->setPosition(ic::vector3df(-45,-10,50));
   skyNode->setRotation(ic::vector3df(-90,0,0));
   skyNode->setScale(ic::vector3df(100,100,100));
   skyNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
