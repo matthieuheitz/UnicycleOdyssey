@@ -311,9 +311,23 @@ int main()
                     roadLength/10.0f/backgroundSpeed*1000*2,
                     false
                         );
+            grassAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(-50,-0.1,0),
+                    ic::vector3df(-50,-0.1,-24),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    true
+                    );
+            groundAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(0,0,0),
+                    ic::vector3df(0,0,-24),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    true
+                    );
             leftWallNode->addAnimator(leftWallAnimator);
             middleWallNode->addAnimator(middleWallAnimator);
             rightWallNode->addAnimator(rightWallAnimator);
+            grassNode->addAnimator(grassAnimator);
+            groundNode->addAnimator(groundAnimator);
 
             // Randomly set a shape in a wall
             wallNumber = rand()%3;
