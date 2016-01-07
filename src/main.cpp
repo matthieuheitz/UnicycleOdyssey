@@ -83,8 +83,9 @@ int main()
   int width = device->getVideoDriver()->getScreenSize().Width;
   int height = device->getVideoDriver()->getScreenSize().Height;
 
-  // We want the character to cross the road in 1 sec
-  float characterTransversalSpeed = roadWidth/1.0;
+  // We want the character to be able to cross the road from one
+  // end to the other in the interval of 2 walls
+  float characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
   float frameDeltaTime = 1/60.0f;
 
   // Current wall and shape chosen
@@ -292,6 +293,7 @@ int main()
 	    {
             // Increase speed
             backgroundSpeed += 0.5;
+            characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
 
             leftWallAnimator = smgr->createFlyStraightAnimator(
                     ic::vector3df(1,1,24),
