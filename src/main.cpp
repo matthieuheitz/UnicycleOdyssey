@@ -78,7 +78,7 @@ int main()
   float backgroundSpeed = 4.0;
   float roadLength = 100;
   float roadWidth = 6;
-  int armState = 4; // 0 for rest position, 1 for UU, 2 for UD, 3 for DU, 4 for DD
+  int armState = 3; // 0 for rest position, 1 for UU, 2 for UD, 3 for DU, 4 for DD
   
   int width = device->getVideoDriver()->getScreenSize().Width;
   int height = device->getVideoDriver()->getScreenSize().Height;
@@ -327,12 +327,12 @@ int main()
 		   if(state_right_arm == 1)
 		   {
 		       node_character->setFrameLoop(10,10);
-		       armState = 1;
+               armState = 0;
 		   }
 		   else if(state_right_arm == -1)
 		   {
 		       node_character->setFrameLoop(40,40);
-		       armState = 2;
+               armState = 1;
 		   }
 	    }
 
@@ -342,12 +342,12 @@ int main()
 		   if(state_right_arm == 1)
 		   {
 		       node_character->setFrameLoop(90,90);
-		       armState = 3;
+               armState = 2;
 		   }
 		   else if(state_right_arm == -1)
 		   {
 		       node_character->setFrameLoop(50,50);
-		       armState = 4;
+               armState = 3;
 		   }
 	    }
 
@@ -357,12 +357,12 @@ int main()
              if(state_left_arm == 1)
 		   {
 		       node_character->setFrameLoop(10,10);
-		       armState = 1;
+               armState = 0;
 		   }
 		   else if(state_left_arm == -1)
 		   {
 		       node_character->setFrameLoop(90,90);
-		       armState = 3;
+               armState = 2;
 		   }
 	    }
 
@@ -372,12 +372,12 @@ int main()
              if(state_left_arm == 1)
 		   {
 		       node_character->setFrameLoop(40,40);
-		       armState = 2;
+               armState = 1;
 		   }
 		   else if(state_left_arm == -1)
 		   {
 		       node_character->setFrameLoop(50,50);
-		       armState = 4;
+               armState = 3;
 		   }
 	    }
 
