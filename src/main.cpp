@@ -91,6 +91,9 @@ int main()
   int wallNumber = 1;
   int shapeNumber = 3;
 
+  // Collisions
+  float validWindowLength = 0.4;
+
   // Initialize the camera
   is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
   camera->setTarget(ic::vector3df(roadWidth/2.0, 0, 3));
@@ -264,6 +267,8 @@ int main()
   rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
   rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
 
+
+  bool alreadyChecked = false;
   while(device->run())
   {
     driver->beginScene(true, true, iv::SColor(0,250,255,255));
@@ -319,6 +324,7 @@ int main()
                                rightWallNode, rightWallTex,
                                shapeUUTex, shapeUDTex,
                                shapeDUTex, shapeDDTex);
+            alreadyChecked = false;
 	    }
 
 		if(receiver.IsKeyDown(irr::KEY_KEY_P))
@@ -394,6 +400,24 @@ int main()
 
         node_character->setPosition(nodePosition);
         node_bike->setPosition(nodeBikePosition);
+
+        if(leftWallNode->getPosition().Z > 3.3 && leftWallNode->getPosition().Z < 4)
+        {
+            if(!alreadyChecked)
+            {
+                // Check position
+                if(nodeBikePosition.X < 2*wallNumber + 1 - validWindowLength/2.0
+                        || nodeBikePosition.X > 2*wallNumber + 1 + validWindowLength/2.0
+                        || shapeNumber != armState)
+                {
+                    std::cout<<"Perdu"<<std::endl;
+                    //TODO: Call function for You Lost screen
+                }
+                alreadyChecked = true;
+            }
+        }
+
+
         // Draw the scene
         smgr->drawAll();
 
