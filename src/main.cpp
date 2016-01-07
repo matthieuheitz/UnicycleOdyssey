@@ -15,11 +15,11 @@ namespace ig = irr::gui;
 void drawAxes(irr::video::IVideoDriver * driver);
 // Modify the active wall and shape
 void changeWallAndShape(int wallNumber, int shapeNumber,
-                   is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
-                   is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
-                   is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
-                   iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
-                   iv::ITexture* shapeDUTex, iv::ITexture* shapeDDTex);
+                        is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
+                        is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
+                        is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
+                        iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
+                        iv::ITexture* shapeDUTex, iv::ITexture* shapeDDTex);
 
 // Event managing class
 class MyEventReceiver : public IEventReceiver
@@ -55,61 +55,61 @@ private:
 
 int main()
 {
-  // Initialize random seed
-  srand (time(NULL));
+    // Initialize random seed
+    srand (time(NULL));
 
-  // Event Receiver
-  MyEventReceiver receiver;
-  // Initialization of the rendering system and window
-  IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
-                                        ic::dimension2d<u32>(640, 480),
-                                        16, false, false, false, &receiver);
-  device->setWindowCaption(L"Unicycle Odyssey");
-  device->setResizable(false);
+    // Event Receiver
+    MyEventReceiver receiver;
+    // Initialization of the rendering system and window
+    IrrlichtDevice *device = createDevice(iv::EDT_OPENGL,
+                                          ic::dimension2d<u32>(640, 480),
+                                          16, false, false, false, &receiver);
+    device->setWindowCaption(L"Unicycle Odyssey");
+    device->setResizable(false);
 
-  iv::IVideoDriver  *driver = device->getVideoDriver();
-  is::ISceneManager *smgr = device->getSceneManager();
-  ig::IGUIEnvironment *gui = device->getGUIEnvironment();
+    iv::IVideoDriver  *driver = device->getVideoDriver();
+    is::ISceneManager *smgr = device->getSceneManager();
+    ig::IGUIEnvironment *gui = device->getGUIEnvironment();
 
-  // Global variables
-  // Speeds are in m/s
-  // physical coordinates are in meters
-  // Times are in seconds
-  float backgroundSpeed = 4.0;
-  float roadLength = 100;
-  float roadWidth = 6;
-  int armState = 3; // 0 for rest position, 1 for UU, 2 for UD, 3 for DU, 4 for DD
-  
-  int width = device->getVideoDriver()->getScreenSize().Width;
-  int height = device->getVideoDriver()->getScreenSize().Height;
+    // Global variables
+    // Speeds are in m/s
+    // physical coordinates are in meters
+    // Times are in seconds
+    float backgroundSpeed = 4.0;
+    float roadLength = 100;
+    float roadWidth = 6;
+    int armState = 3; // 0 for rest position, 1 for UU, 2 for UD, 3 for DU, 4 for DD
 
-  // We want the character to be able to cross the road from one
-  // end to the other in the interval of 2 walls
-  float characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
-  float frameDeltaTime = 1/60.0f;
+    int width = device->getVideoDriver()->getScreenSize().Width;
+    int height = device->getVideoDriver()->getScreenSize().Height;
 
-  // Current wall and shape chosen
-  int wallNumber = 1;
-  int shapeNumber = 3;
+    // We want the character to be able to cross the road from one
+    // end to the other in the interval of 2 walls
+    float characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
+    float frameDeltaTime = 1/60.0f;
 
-  // Collisions
-  float validWindowLength = 0.4;
+    // Current wall and shape chosen
+    int wallNumber = 1;
+    int shapeNumber = 3;
 
-  // Initialize the camera
-  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
-  camera->setTarget(ic::vector3df(roadWidth/2.0, 1, 3));
-  camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
+    // Collisions
+    float validWindowLength = 0.4;
 
-  iv::ITexture *startScreenText;
-  iv::ITexture *startButtonText;
+    // Initialize the camera
+    is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
+    camera->setTarget(ic::vector3df(roadWidth/2.0, 1, 3));
+    camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
 
-  startScreenText = driver->getTexture("data/startScreen.png");
-  startButtonText = driver->getTexture("data/startButton.png");
+    iv::ITexture *startScreenText;
+    iv::ITexture *startButtonText;
 
-  ig::IGUIImage *imageStartScreen   = gui->addImage(ic::rect<s32>(0,0,  width, height));
-  imageStartScreen->setUseAlphaChannel(true);
-  imageStartScreen->setImage(startScreenText);
-  imageStartScreen->setScaleImage(true);
+    startScreenText = driver->getTexture("data/startScreen.png");
+    startButtonText = driver->getTexture("data/startButton.png");
+
+    ig::IGUIImage *imageStartScreen   = gui->addImage(ic::rect<s32>(0,0,  width, height));
+    imageStartScreen->setUseAlphaChannel(true);
+    imageStartScreen->setImage(startScreenText);
+    imageStartScreen->setScaleImage(true);
 
     ig::IGUIButton *startButton = gui->addButton(ic::rect<s32>(width/2 - 100, height/2 - 50, width/2 + 100, height/2 + 50));
     startButton->setScaleImage(true);
@@ -117,336 +117,336 @@ int main()
     startButton->setUseAlphaChannel(true);
     startButton->setDrawBorder(false);
 
-  // Load the ground
-  is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
-  iv::ITexture * groundTex = driver->getTexture("data/Bois.png");
+    // Load the ground
+    is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
+    iv::ITexture * groundTex = driver->getTexture("data/Bois.png");
 
 
 
-  // Create nodes for the ground
-  is::IMeshSceneNode * groundNode = smgr->addMeshSceneNode(groundMesh);
-  is::ISceneNodeAnimator * groundAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(0,0,0),
-                                          ic::vector3df(0,0,-24),
-                                          roadLength/10.0f/backgroundSpeed*1000*2,
-                                          true
-                                          );
+    // Create nodes for the ground
+    is::IMeshSceneNode * groundNode = smgr->addMeshSceneNode(groundMesh);
+    is::ISceneNodeAnimator * groundAnimator =
+            smgr->createFlyStraightAnimator(ic::vector3df(0,0,0),
+                                            ic::vector3df(0,0,-24),
+                                            roadLength/10.0f/backgroundSpeed*1000*2,
+                                            true
+                                            );
 
 
 
 
-  // Initialize the ground mesh node
-  groundNode->setPosition(ic::vector3df(0,0,0));
-  groundNode->setScale(ic::vector3df(roadWidth,1,roadLength));
-  groundNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  groundNode->setMaterialTexture(0, groundTex);
-//  groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
-  groundNode->addAnimator(groundAnimator);
+    // Initialize the ground mesh node
+    groundNode->setPosition(ic::vector3df(0,0,0));
+    groundNode->setScale(ic::vector3df(roadWidth,1,roadLength));
+    groundNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    groundNode->setMaterialTexture(0, groundTex);
+    //  groundNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
+    groundNode->addAnimator(groundAnimator);
 
-  // Load sky
-  is::IMesh * skyMesh = loadIMeshFromOBJ(smgr, "data/sky.obj");
-  iv::ITexture * skyText = driver->getTexture("data/sky.jpg");  
+    // Load sky
+    is::IMesh * skyMesh = loadIMeshFromOBJ(smgr, "data/sky.obj");
+    iv::ITexture * skyText = driver->getTexture("data/sky.jpg");
 
-  // Create nodes for the sky
-  is::IMeshSceneNode * skyNode = smgr->addMeshSceneNode(skyMesh);
-  // Initialize the sky mesh node
-  skyNode->setPosition(ic::vector3df(-45,-10,50));
-  skyNode->setRotation(ic::vector3df(-90,0,0));
-  skyNode->setScale(ic::vector3df(100,100,100));
-  skyNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  skyNode->setMaterialTexture(0, skyText);
-//  skyNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
+    // Create nodes for the sky
+    is::IMeshSceneNode * skyNode = smgr->addMeshSceneNode(skyMesh);
+    // Initialize the sky mesh node
+    skyNode->setPosition(ic::vector3df(-45,-10,50));
+    skyNode->setRotation(ic::vector3df(-90,0,0));
+    skyNode->setScale(ic::vector3df(100,100,100));
+    skyNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    skyNode->setMaterialTexture(0, skyText);
+    //  skyNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
 
-  // Load grass
-  is::IMesh * grassMesh = loadIMeshFromOBJ(smgr, "data/grass.obj");
-  iv::ITexture * grassText = driver->getTexture("data/grass.jpg");  
+    // Load grass
+    is::IMesh * grassMesh = loadIMeshFromOBJ(smgr, "data/grass.obj");
+    iv::ITexture * grassText = driver->getTexture("data/grass.jpg");
 
 
-  is::ISceneNodeAnimator * grassAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(-50,-0.1,0),
-                                          ic::vector3df(-50,-0.1,-24),
-                                          roadLength/10.0f/backgroundSpeed*1000*2,
-                                          true
-                                          );
-  // Create nodes for the grass
-  is::IMeshSceneNode * grassNode = smgr->addMeshSceneNode(grassMesh);
-  // Initialize the grass mesh node
-  grassNode->setPosition(ic::vector3df(-50,-0.1,0));
-  grassNode->setRotation(ic::vector3df(0,0,0));
-  grassNode->setScale(ic::vector3df(100,100,100));
-  grassNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  grassNode->setMaterialTexture(0, grassText);
-  grassNode->addAnimator(grassAnimator);
-//  skyNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
+    is::ISceneNodeAnimator * grassAnimator =
+            smgr->createFlyStraightAnimator(ic::vector3df(-50,-0.1,0),
+                                            ic::vector3df(-50,-0.1,-24),
+                                            roadLength/10.0f/backgroundSpeed*1000*2,
+                                            true
+                                            );
+    // Create nodes for the grass
+    is::IMeshSceneNode * grassNode = smgr->addMeshSceneNode(grassMesh);
+    // Initialize the grass mesh node
+    grassNode->setPosition(ic::vector3df(-50,-0.1,0));
+    grassNode->setRotation(ic::vector3df(0,0,0));
+    grassNode->setScale(ic::vector3df(100,100,100));
+    grassNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    grassNode->setMaterialTexture(0, grassText);
+    grassNode->addAnimator(grassAnimator);
+    //  skyNode->getMaterial(0).getTextureMatrix(0).setTextureScale(roadLength, 1);
     
-  // Loading a character mesh
-  is::IAnimatedMesh *mesh_character = smgr->getMesh("data/character.x");
-  // Creating node from mesh
-  is::IAnimatedMeshSceneNode *node_character = smgr->addAnimatedMeshSceneNode(mesh_character);
-  ic::vector3df scale(0.19,0.19,0.19 );
-  node_character->setScale( scale );
-  node_character->setRotation(ic::vector3df(0,180,0));
-  node_character->setPosition(ic::vector3df(3,0.2,3.0));
-  node_character->setMaterialFlag(video::EMF_LIGHTING, false);
+    // Loading a character mesh
+    is::IAnimatedMesh *mesh_character = smgr->getMesh("data/character.x");
+    // Creating node from mesh
+    is::IAnimatedMeshSceneNode *node_character = smgr->addAnimatedMeshSceneNode(mesh_character);
+    ic::vector3df scale(0.19,0.19,0.19 );
+    node_character->setScale( scale );
+    node_character->setRotation(ic::vector3df(0,180,0));
+    node_character->setPosition(ic::vector3df(3,0.2,3.0));
+    node_character->setMaterialFlag(video::EMF_LIGHTING, false);
 
-  /** Testing texture, to be changed **/
-  //node_character->setMaterialTexture( 0, driver->getTexture("data/mountain.jpg") );
-  //node_character->setMaterialType( video::EMT_SOLID );
-  /** **/
+    /** Testing texture, to be changed **/
+    //node_character->setMaterialTexture( 0, driver->getTexture("data/mountain.jpg") );
+    //node_character->setMaterialType( video::EMT_SOLID );
+    /** **/
 
-  node_character->setFrameLoop(50, 50);
-  node_character->setAnimationSpeed(15);
+    node_character->setFrameLoop(50, 50);
+    node_character->setAnimationSpeed(15);
 
-  // Loading a bike mesh
-  is::IAnimatedMesh *mesh_bike = smgr->getMesh("data/bike.x");
-  
-  // Creating node from mesh
-  is::IAnimatedMeshSceneNode *node_bike = smgr->addAnimatedMeshSceneNode(mesh_bike);
-  ic::vector3df scale_bike(1,1,1);
-  node_bike->setScale( scale_bike );
-  node_bike->setRotation(ic::vector3df(-90,90,0));
-  node_bike->setPosition(ic::vector3df(3,0.2,3.35));
-  node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
+    // Loading a bike mesh
+    is::IAnimatedMesh *mesh_bike = smgr->getMesh("data/bike.x");
 
-  int state_left_arm = -1; // 0 for rest position, -1 for down, +1 for up
-  int state_right_arm = -1;
+    // Creating node from mesh
+    is::IAnimatedMeshSceneNode *node_bike = smgr->addAnimatedMeshSceneNode(mesh_bike);
+    ic::vector3df scale_bike(1,1,1);
+    node_bike->setScale( scale_bike );
+    node_bike->setRotation(ic::vector3df(-90,90,0));
+    node_bike->setPosition(ic::vector3df(3,0.2,3.35));
+    node_bike->setMaterialFlag(video::EMF_LIGHTING, false);
 
-  // Create walls
-  is::IMeshSceneNode * leftWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(1, 1, 5),
-                                                        core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
-  is::IMeshSceneNode * middleWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(3, 1, 5),
-                                                        core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
-  is::IMeshSceneNode * rightWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(5, 1, 5),
-                                                        core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
-  is::ISceneNodeAnimator * leftWallAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(1,1,24),
-                                          ic::vector3df(1,1,0),
-                                          roadLength/10.0f/backgroundSpeed*1000*2,
-                                          false
-                                          );
-  is::ISceneNodeAnimator * middleWallAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(3,1,24),
-                                          ic::vector3df(3,1,0),
-                                          roadLength/10.0f/backgroundSpeed*1000*2,
-                                          false
-                                          );
-  is::ISceneNodeAnimator * rightWallAnimator =
-          smgr->createFlyStraightAnimator(ic::vector3df(5,1,24),
-                                          ic::vector3df(5,1,0),
-                                          roadLength/10.0f/backgroundSpeed*1000*2,
-                                          false
-                                          );
-  iv::ITexture * leftWallTex = driver->getTexture("data/Wall_left.png");
-  iv::ITexture * middleWallTex = driver->getTexture("data/Wall_middle.png");
-  iv::ITexture * rightWallTex = driver->getTexture("data/Wall_right.png");
-  iv::ITexture * shapeUUTex = driver->getTexture("data/shapes/Shape_UU_t.png");
-  iv::ITexture * shapeUDTex = driver->getTexture("data/shapes/Shape_UD_t.png");
-  iv::ITexture * shapeDUTex = driver->getTexture("data/shapes/Shape_DU_t.png");
-  iv::ITexture * shapeDDTex = driver->getTexture("data/shapes/Shape_DD_t.png");
+    int state_left_arm = -1; // 0 for rest position, -1 for down, +1 for up
+    int state_right_arm = -1;
 
-  leftWallNode->addAnimator(leftWallAnimator);
-  leftWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  leftWallNode->setMaterialTexture(0, leftWallTex);
-  leftWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
+    // Create walls
+    is::IMeshSceneNode * leftWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(1, 1, 5),
+                                                               core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
+    is::IMeshSceneNode * middleWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(3, 1, 5),
+                                                                 core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
+    is::IMeshSceneNode * rightWallNode = smgr->addCubeSceneNode(1.0f, 0, -1, core::vector3df(5, 1, 5),
+                                                                core::vector3df(0,0,0), core::vector3df(roadWidth/3.0, 2, 0.2));
+    is::ISceneNodeAnimator * leftWallAnimator =
+            smgr->createFlyStraightAnimator(ic::vector3df(1,1,24),
+                                            ic::vector3df(1,1,0),
+                                            roadLength/10.0f/backgroundSpeed*1000*2,
+                                            false
+                                            );
+    is::ISceneNodeAnimator * middleWallAnimator =
+            smgr->createFlyStraightAnimator(ic::vector3df(3,1,24),
+                                            ic::vector3df(3,1,0),
+                                            roadLength/10.0f/backgroundSpeed*1000*2,
+                                            false
+                                            );
+    is::ISceneNodeAnimator * rightWallAnimator =
+            smgr->createFlyStraightAnimator(ic::vector3df(5,1,24),
+                                            ic::vector3df(5,1,0),
+                                            roadLength/10.0f/backgroundSpeed*1000*2,
+                                            false
+                                            );
+    iv::ITexture * leftWallTex = driver->getTexture("data/Wall_left.png");
+    iv::ITexture * middleWallTex = driver->getTexture("data/Wall_middle.png");
+    iv::ITexture * rightWallTex = driver->getTexture("data/Wall_right.png");
+    iv::ITexture * shapeUUTex = driver->getTexture("data/shapes/Shape_UU_t.png");
+    iv::ITexture * shapeUDTex = driver->getTexture("data/shapes/Shape_UD_t.png");
+    iv::ITexture * shapeDUTex = driver->getTexture("data/shapes/Shape_DU_t.png");
+    iv::ITexture * shapeDDTex = driver->getTexture("data/shapes/Shape_DD_t.png");
 
-  leftWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
-  leftWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
+    leftWallNode->addAnimator(leftWallAnimator);
+    leftWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    leftWallNode->setMaterialTexture(0, leftWallTex);
+    leftWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
-  middleWallNode->addAnimator(middleWallAnimator);
-  middleWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  middleWallNode->setMaterialTexture(0, shapeDDTex);
-  middleWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
+    leftWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
+    leftWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
 
-  middleWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
-  middleWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
+    middleWallNode->addAnimator(middleWallAnimator);
+    middleWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    middleWallNode->setMaterialTexture(0, shapeDDTex);
+    middleWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
 
-  rightWallNode->addAnimator(rightWallAnimator);
-  rightWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
-  rightWallNode->setMaterialTexture(0, rightWallTex);
-  rightWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
+    middleWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
+    middleWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
 
-  rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
-  rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
+    rightWallNode->addAnimator(rightWallAnimator);
+    rightWallNode->setMaterialFlag(irr::video::EMF_LIGHTING, false);
+    rightWallNode->setMaterialTexture(0, rightWallTex);
+    rightWallNode->setMaterialType(video::EMT_TRANSPARENT_ALPHA_CHANNEL_REF);
+
+    rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureScaleCenter(1,0.65);
+    rightWallNode->getMaterial(0).getTextureMatrix(0).setTextureTranslate(0,0.15);
 
 
-  bool alreadyChecked = false;
-  while(device->run())
-  {
-    driver->beginScene(true, true, iv::SColor(0,250,255,255));
-
-    // Draw Axes
-    drawAxes(driver);
-
-    if(startButton->isPressed() && startButton->isEnabled())
+    bool alreadyChecked = false;
+    while(device->run())
     {
-     
-        startButton->setVisible(false);
-        startButton->setEnabled(false);
-        imageStartScreen->setVisible(false);
-    }
-    else
-    {
-	    core::vector3df nodePosition = node_character->getPosition();
-	    core::vector3df nodeBikePosition = node_bike->getPosition();
+        driver->beginScene(true, true, iv::SColor(0,250,255,255));
 
-	    if(leftWallAnimator->hasFinished())
-	    {
-            // Increase speed
-            backgroundSpeed += 0.5;
-            characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
+        // Draw Axes
+        drawAxes(driver);
 
-            leftWallAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(1,1,24),
-                    ic::vector3df(1,1,0),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    false
-                    );
-            middleWallAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(3,1,24),
-                    ic::vector3df(3,1,0),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    false
-                    );
-            rightWallAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(5,1,24),
-                    ic::vector3df(5,1,0),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    false
-                        );
-            grassAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(-50,-0.1,0),
-                    ic::vector3df(-50,-0.1,-24),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    true
-                    );
-            groundAnimator = smgr->createFlyStraightAnimator(
-                    ic::vector3df(0,0,0),
-                    ic::vector3df(0,0,-24),
-                    roadLength/10.0f/backgroundSpeed*1000*2,
-                    true
-                    );
-            leftWallNode->addAnimator(leftWallAnimator);
-            middleWallNode->addAnimator(middleWallAnimator);
-            rightWallNode->addAnimator(rightWallAnimator);
-            grassNode->addAnimator(grassAnimator);
-            groundNode->addAnimator(groundAnimator);
-
-            // Randomly set a shape in a wall
-            wallNumber = rand()%3;
-            shapeNumber = rand()%4;
-            changeWallAndShape(wallNumber, shapeNumber,
-                               leftWallNode, leftWallTex,
-                               middleWallNode, middleWallTex,
-                               rightWallNode, rightWallTex,
-                               shapeUUTex, shapeUDTex,
-                               shapeDUTex, shapeDDTex);
-            alreadyChecked = false;
-	    }
-
-		if(receiver.IsKeyDown(irr::KEY_KEY_P))
-	    {
-		   state_left_arm = 1;
-		   if(state_right_arm == 1)
-		   {
-		       node_character->setFrameLoop(10,10);
-               armState = 0;
-		   }
-		   else if(state_right_arm == -1)
-		   {
-		       node_character->setFrameLoop(40,40);
-               armState = 1;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_M))
-	    {
-		   state_left_arm = -1;
-		   if(state_right_arm == 1)
-		   {
-		       node_character->setFrameLoop(90,90);
-               armState = 2;
-		   }
-		   else if(state_right_arm == -1)
-		   {
-		       node_character->setFrameLoop(50,50);
-               armState = 3;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_I))
-	    {
-		   state_right_arm = 1;
-             if(state_left_arm == 1)
-		   {
-		       node_character->setFrameLoop(10,10);
-               armState = 0;
-		   }
-		   else if(state_left_arm == -1)
-		   {
-		       node_character->setFrameLoop(90,90);
-               armState = 2;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_K))
-	    {
-		   state_right_arm = -1;
-             if(state_left_arm == 1)
-		   {
-		       node_character->setFrameLoop(40,40);
-               armState = 1;
-		   }
-		   else if(state_left_arm == -1)
-		   {
-		       node_character->setFrameLoop(50,50);
-               armState = 3;
-		   }
-	    }
-
-	    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
-	    {
-            nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
-            nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
-	    }
-	    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-	    {
-            nodePosition.X += characterTransversalSpeed * frameDeltaTime;
-            nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
-	    }
-
-        node_character->setPosition(nodePosition);
-        node_bike->setPosition(nodeBikePosition);
-
-        if(leftWallNode->getPosition().Z > 3.3 && leftWallNode->getPosition().Z < 4)
+        if(startButton->isPressed() && startButton->isEnabled())
         {
-            if(!alreadyChecked)
-            {
-                // Check position
-                if(nodeBikePosition.X < 2*wallNumber + 1 - validWindowLength/2.0
-                        || nodeBikePosition.X > 2*wallNumber + 1 + validWindowLength/2.0
-                        || shapeNumber != armState)
-                {
-                    std::cout<<"Perdu"<<std::endl;
-                    //TODO: Call function for You Lost screen
-                }
-                alreadyChecked = true;
-            }
+
+            startButton->setVisible(false);
+            startButton->setEnabled(false);
+            imageStartScreen->setVisible(false);
         }
+        else
+        {
+            core::vector3df nodePosition = node_character->getPosition();
+            core::vector3df nodeBikePosition = node_bike->getPosition();
+
+            if(leftWallAnimator->hasFinished())
+            {
+                // Increase speed
+                backgroundSpeed += 0.5;
+                characterTransversalSpeed = roadWidth/(24/backgroundSpeed);
+
+                leftWallAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(1,1,24),
+                            ic::vector3df(1,1,0),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            false
+                            );
+                middleWallAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(3,1,24),
+                            ic::vector3df(3,1,0),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            false
+                            );
+                rightWallAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(5,1,24),
+                            ic::vector3df(5,1,0),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            false
+                            );
+                grassAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(-50,-0.1,0),
+                            ic::vector3df(-50,-0.1,-24),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            true
+                            );
+                groundAnimator = smgr->createFlyStraightAnimator(
+                            ic::vector3df(0,0,0),
+                            ic::vector3df(0,0,-24),
+                            roadLength/10.0f/backgroundSpeed*1000*2,
+                            true
+                            );
+                leftWallNode->addAnimator(leftWallAnimator);
+                middleWallNode->addAnimator(middleWallAnimator);
+                rightWallNode->addAnimator(rightWallAnimator);
+                grassNode->addAnimator(grassAnimator);
+                groundNode->addAnimator(groundAnimator);
+
+                // Randomly set a shape in a wall
+                wallNumber = rand()%3;
+                shapeNumber = rand()%4;
+                changeWallAndShape(wallNumber, shapeNumber,
+                                   leftWallNode, leftWallTex,
+                                   middleWallNode, middleWallTex,
+                                   rightWallNode, rightWallTex,
+                                   shapeUUTex, shapeUDTex,
+                                   shapeDUTex, shapeDDTex);
+                alreadyChecked = false;
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_P))
+            {
+                state_left_arm = 1;
+                if(state_right_arm == 1)
+                {
+                    node_character->setFrameLoop(10,10);
+                    armState = 0;
+                }
+                else if(state_right_arm == -1)
+                {
+                    node_character->setFrameLoop(40,40);
+                    armState = 1;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_M))
+            {
+                state_left_arm = -1;
+                if(state_right_arm == 1)
+                {
+                    node_character->setFrameLoop(90,90);
+                    armState = 2;
+                }
+                else if(state_right_arm == -1)
+                {
+                    node_character->setFrameLoop(50,50);
+                    armState = 3;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_I))
+            {
+                state_right_arm = 1;
+                if(state_left_arm == 1)
+                {
+                    node_character->setFrameLoop(10,10);
+                    armState = 0;
+                }
+                else if(state_left_arm == -1)
+                {
+                    node_character->setFrameLoop(90,90);
+                    armState = 2;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_K))
+            {
+                state_right_arm = -1;
+                if(state_left_arm == 1)
+                {
+                    node_character->setFrameLoop(40,40);
+                    armState = 1;
+                }
+                else if(state_left_arm == -1)
+                {
+                    node_character->setFrameLoop(50,50);
+                    armState = 3;
+                }
+            }
+
+            if(receiver.IsKeyDown(irr::KEY_KEY_Q))
+            {
+                nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
+                nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
+            }
+            else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+            {
+                nodePosition.X += characterTransversalSpeed * frameDeltaTime;
+                nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
+            }
+
+            node_character->setPosition(nodePosition);
+            node_bike->setPosition(nodeBikePosition);
+
+            if(leftWallNode->getPosition().Z > 3.3 && leftWallNode->getPosition().Z < 4)
+            {
+                if(!alreadyChecked)
+                {
+                    // Check position
+                    if(nodeBikePosition.X < 2*wallNumber + 1 - validWindowLength/2.0
+                            || nodeBikePosition.X > 2*wallNumber + 1 + validWindowLength/2.0
+                            || shapeNumber != armState)
+                    {
+                        std::cout<<"Perdu"<<std::endl;
+                        //TODO: Call function for You Lost screen
+                    }
+                    alreadyChecked = true;
+                }
+            }
 
 
-        // Draw the scene
-        smgr->drawAll();
+            // Draw the scene
+            smgr->drawAll();
 
+        }
+        gui->drawAll();
+
+
+
+        driver->endScene();
     }
-    gui->drawAll();
+    device->drop();
 
-
-
-    driver->endScene();
-  }
-  device->drop();
-
-  return 0;
+    return 0;
 }
 
 void drawAxes(video::IVideoDriver *driver)
@@ -462,11 +462,11 @@ void drawAxes(video::IVideoDriver *driver)
 }
 
 void changeWallAndShape(int wallNumber, int shapeNumber,
-                   is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
-                   is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
-                   is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
-                   iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
-                   iv::ITexture* shapeDUTex, iv::ITexture* shapeDDTex)
+                        is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
+                        is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
+                        is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
+                        iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
+                        iv::ITexture* shapeDUTex, iv::ITexture* shapeDDTex)
 {
     switch(shapeNumber)
     {
