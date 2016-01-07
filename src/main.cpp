@@ -15,7 +15,7 @@ namespace ig = irr::gui;
 void drawAxes(irr::video::IVideoDriver * driver);
 // Modify the active wall and shape
 void changeWallAndShape(int wallNumber, int shapeNumber,
-                        is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
+                           is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
                         is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
                         is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
                         iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
@@ -102,9 +102,11 @@ int main()
 
     iv::ITexture *startScreenText;
     iv::ITexture *startButtonText;
+    iv::ITexture *gameoverScreenText;
 
     startScreenText = driver->getTexture("data/startScreen_640x480.png");
     startButtonText = driver->getTexture("data/startButton.png");
+    gameoverScreenText = driver->getTexture("data/gameoverScreen.png");
 
     ig::IGUIImage *imageStartScreen   = gui->addImage(ic::rect<s32>(0,0,  width, height));
     imageStartScreen->setUseAlphaChannel(true);
@@ -457,8 +459,12 @@ int main()
                                 || nodeBikePosition.X > 2*wallNumber + 1 + validWindowLength/2.0
                                 || shapeNumber != armState)
                         {
-                            std::cout<<"Perdu"<<std::endl;
-                            //TODO: Call function for You Lost screen
+                            ig::IGUIImage *imageGameoverScreen   = gui->addImage(ic::rect<s32>(0,0,  width, height));
+                            imageGameoverScreen->setUseAlphaChannel(true);
+                            imageGameoverScreen->setImage(gameoverScreenText);
+                            imageGameoverScreen->setScaleImage(true);
+                            gui->drawAll();
+                            driver->endScene();
                         }
                         else{
                             score++;
