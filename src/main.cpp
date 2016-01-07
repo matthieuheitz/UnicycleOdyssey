@@ -13,6 +13,13 @@ namespace ig = irr::gui;
 
 // Prototypes
 void drawAxes(irr::video::IVideoDriver * driver);
+// Modify the active wall and shape
+void changeWallAndShape(int wallNumber, int shapeNumber,
+                   is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
+                   is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
+                   is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
+                   iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
+                   iv::ITexture* shapeDUTex, iv::ITexture* shapeDDTex);
 
 // Event managing class
 class MyEventReceiver : public IEventReceiver
@@ -278,129 +285,40 @@ int main()
 
 	    if(leftWallAnimator->hasFinished())
 	    {
-		// Increase speed
-		backgroundSpeed += 0.5;
+            // Increase speed
+            backgroundSpeed += 0.5;
 
-		leftWallAnimator = smgr->createFlyStraightAnimator(
-		        ic::vector3df(1,1,24),
-		        ic::vector3df(1,1,0),
-		        roadLength/10.0f/backgroundSpeed*1000*2,
-		        false
-		        );
-		middleWallAnimator = smgr->createFlyStraightAnimator(
-		        ic::vector3df(3,1,24),
-		        ic::vector3df(3,1,0),
-		        roadLength/10.0f/backgroundSpeed*1000*2,
-		        false
-		        );
-		rightWallAnimator = smgr->createFlyStraightAnimator(
-		        ic::vector3df(5,1,24),
-		        ic::vector3df(5,1,0),
-		        roadLength/10.0f/backgroundSpeed*1000*2,
-		        false
-		        );
-		leftWallNode->addAnimator(leftWallAnimator);
-		middleWallNode->addAnimator(middleWallAnimator);
-		rightWallNode->addAnimator(rightWallAnimator);
+            leftWallAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(1,1,24),
+                    ic::vector3df(1,1,0),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    false
+                    );
+            middleWallAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(3,1,24),
+                    ic::vector3df(3,1,0),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    false
+                    );
+            rightWallAnimator = smgr->createFlyStraightAnimator(
+                    ic::vector3df(5,1,24),
+                    ic::vector3df(5,1,0),
+                    roadLength/10.0f/backgroundSpeed*1000*2,
+                    false
+                        );
+            leftWallNode->addAnimator(leftWallAnimator);
+            middleWallNode->addAnimator(middleWallAnimator);
+            rightWallNode->addAnimator(rightWallAnimator);
 
-		// Randomly set a shape in a wall
-		wallNumber = rand()%3;
-		shapeNumber = rand()%4;
-		switch(shapeNumber)
-		{
-		case 0:
-		    switch(wallNumber)
-		    {
-		    case 0:
-		        leftWallNode->setMaterialTexture(0, shapeUUTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 1:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, shapeUUTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 2:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, shapeUUTex);
-		        break;
-		    }
-		    break;
-
-		case 1:
-		    switch(wallNumber)
-		    {
-		    case 0:
-		        leftWallNode->setMaterialTexture(0, shapeDUTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 1:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, shapeDUTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 2:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, shapeDUTex);
-		        break;
-		    }
-		    break;
-
-		case 2:
-		    switch(wallNumber)
-		    {
-		    case 0:
-		        leftWallNode->setMaterialTexture(0, shapeUDTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 1:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, shapeUDTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 2:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, shapeUDTex);
-		        break;
-		    }
-		    break;
-
-		case 3:
-		    switch(wallNumber)
-		    {
-		    case 0:
-		        leftWallNode->setMaterialTexture(0, shapeDDTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 1:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, shapeDDTex);
-		        rightWallNode->setMaterialTexture(0, rightWallTex);
-		        break;
-
-		    case 2:
-		        leftWallNode->setMaterialTexture(0, leftWallTex);
-		        middleWallNode->setMaterialTexture(0, middleWallTex);
-		        rightWallNode->setMaterialTexture(0, shapeDDTex);
-		        break;
-		    }
-		    break;
-
-		}
+            // Randomly set a shape in a wall
+            wallNumber = rand()%3;
+            shapeNumber = rand()%4;
+            changeWallAndShape(wallNumber, shapeNumber,
+                               leftWallNode, leftWallTex,
+                               middleWallNode, middleWallTex,
+                               rightWallNode, rightWallTex,
+                               shapeUUTex, shapeUDTex,
+                               shapeDUTex, shapeDDTex);
 	    }
 
 		if(receiver.IsKeyDown(irr::KEY_KEY_P))
@@ -500,4 +418,108 @@ void drawAxes(video::IVideoDriver *driver)
     driver->draw3DLine(ic::vector3df(0,0,0),ic::vector3df(1,0,0),iv::SColor(0,255,0,0));
     driver->draw3DLine(ic::vector3df(0,0,0),ic::vector3df(0,1,0),iv::SColor(0,0,255,0));
     driver->draw3DLine(ic::vector3df(0,0,0),ic::vector3df(0,0,1),iv::SColor(0,0,0,255));
+}
+
+void changeWallAndShape(int wallNumber, int shapeNumber,
+                   is::IMeshSceneNode* leftWallNode, iv::ITexture* leftWallTex,
+                   is::IMeshSceneNode* middleWallNode, iv::ITexture* middleWallTex,
+                   is::IMeshSceneNode* rightWallNode, iv::ITexture* rightWallTex,
+                   iv::ITexture* shapeUUTex,  iv::ITexture* shapeUDTex,
+                   iv::ITexture* shapeDUTex, iv::ITexture* shapeDDTex)
+{
+    switch(shapeNumber)
+    {
+    case 0:
+        switch(wallNumber)
+        {
+        case 0:
+            leftWallNode->setMaterialTexture(0, shapeUUTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 1:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, shapeUUTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 2:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, shapeUUTex);
+            break;
+        }
+        break;
+
+    case 1:
+        switch(wallNumber)
+        {
+        case 0:
+            leftWallNode->setMaterialTexture(0, shapeDUTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 1:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, shapeDUTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 2:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, shapeDUTex);
+            break;
+        }
+        break;
+
+    case 2:
+        switch(wallNumber)
+        {
+        case 0:
+            leftWallNode->setMaterialTexture(0, shapeUDTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 1:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, shapeUDTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 2:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, shapeUDTex);
+            break;
+        }
+        break;
+
+    case 3:
+        switch(wallNumber)
+        {
+        case 0:
+            leftWallNode->setMaterialTexture(0, shapeDDTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 1:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, shapeDDTex);
+            rightWallNode->setMaterialTexture(0, rightWallTex);
+            break;
+
+        case 2:
+            leftWallNode->setMaterialTexture(0, leftWallTex);
+            middleWallNode->setMaterialTexture(0, middleWallTex);
+            rightWallNode->setMaterialTexture(0, shapeDDTex);
+            break;
+        }
+        break;
+
+    }
 }
