@@ -103,7 +103,7 @@ int main()
   iv::ITexture *startScreenText;
   iv::ITexture *startButtonText;
 
-  startScreenText = driver->getTexture("data/startScreen.png");
+  startScreenText = driver->getTexture("data/startScreen_640x480.png");
   startButtonText = driver->getTexture("data/startButton.png");
 
   ig::IGUIImage *imageStartScreen   = gui->addImage(ic::rect<s32>(0,0,  width, height));
@@ -111,11 +111,11 @@ int main()
   imageStartScreen->setImage(startScreenText);
   imageStartScreen->setScaleImage(true);
 
-    ig::IGUIButton *startButton = gui->addButton(ic::rect<s32>(width/2 - 100, height/2 - 50, width/2 + 100, height/2 + 50));
-    startButton->setScaleImage(true);
-    startButton->setImage(startButtonText);
-    startButton->setUseAlphaChannel(true);
-    startButton->setDrawBorder(false);
+  ig::IGUIButton *startButton = gui->addButton(ic::rect<s32>(width/2 - 50, height/2 - 50, width/2 + 50, height/2 + 50));
+  startButton->setScaleImage(true);
+  startButton->setImage(startButtonText);
+  startButton->setUseAlphaChannel(true);
+  startButton->setDrawBorder(false);
 
   // Load the ground
   is::IMesh * groundMesh = loadIMeshFromOBJ(smgr, "data/ground.obj");
