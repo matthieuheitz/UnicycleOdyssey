@@ -383,19 +383,20 @@ int main()
 
 	    if(receiver.IsKeyDown(irr::KEY_KEY_Q))
 	    {
-		nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
-		nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
+            nodePosition.X -= characterTransversalSpeed * frameDeltaTime;
+            nodeBikePosition.X -= characterTransversalSpeed * frameDeltaTime;
 	    }
 	    else if(receiver.IsKeyDown(irr::KEY_KEY_D))
 	    {
-		nodePosition.X += characterTransversalSpeed * frameDeltaTime;
-		nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
+            nodePosition.X += characterTransversalSpeed * frameDeltaTime;
+            nodeBikePosition.X += characterTransversalSpeed * frameDeltaTime;
 	    }
 
-          node_character->setPosition(nodePosition);
-          node_bike->setPosition(nodeBikePosition);    
-          // Draw the scene
-          smgr->drawAll();
+        node_character->setPosition(nodePosition);
+        node_bike->setPosition(nodeBikePosition);
+        // Draw the scene
+        smgr->drawAll();
+
     }
     gui->drawAll();
 
