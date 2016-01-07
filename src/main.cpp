@@ -460,11 +460,14 @@ int main()
                             std::cout<<"Perdu"<<std::endl;
                             //TODO: Call function for You Lost screen
                         }
+                        else{
+                            score++;
+                        }
                         alreadyChecked = true;
                     }
                 }
                 // Calcul du score :
-                score++; if (score == 50000) score = -1;
+                if (score == 50000) score = -1;
                 // Mise à jour du score :
                 score_10000->setImage(digits[(score / 10000) % 10]);
                 score_1000->setImage(digits[(score / 1000) % 10]);
