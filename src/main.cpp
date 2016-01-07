@@ -96,7 +96,8 @@ int main()
   float validWindowLength = 0.4;
 
   // Initialize the camera
-  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f);
+//  is::ICameraSceneNode *camera = smgr->addCameraSceneNodeFPS(0,50.0f,0.02f); // Camera de debug
+  is::ICameraSceneNode *camera = smgr->addCameraSceneNode(); // Camera de jeu
   camera->setTarget(ic::vector3df(roadWidth/2.0, 1, 3));
   camera->setPosition(ic::vector3df(roadWidth/2.0, 1.5, 0));
 
